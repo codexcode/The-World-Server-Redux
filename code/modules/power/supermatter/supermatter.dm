@@ -95,7 +95,7 @@
 	return ..()
 
 /obj/machinery/power/supermatter/Destroy()
-	QDEL_NULL(soundloop)
+	qdel(soundloop)
 	return ..()
 
 /obj/machinery/power/supermatter/proc/explode()

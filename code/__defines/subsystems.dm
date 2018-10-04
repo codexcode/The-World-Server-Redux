@@ -1,3 +1,23 @@
+//Timing subsystem
+//Don't run if there is an identical unique timer active
+//if the arguments to addtimer are the same as an existing timer, it doesn't create a new timer, and returns the id of the existing timer
+#define TIMER_UNIQUE			(1<<0)
+//For unique timers: Replace the old timer rather then not start this one
+#define TIMER_OVERRIDE			(1<<1)
+//Timing should be based on how timing progresses on clients, not the sever.
+//	tracking this is more expensive,
+//	should only be used in conjuction with things that have to progress client side, such as animate() or sound()
+#define TIMER_CLIENT_TIME		(1<<2)
+//Timer can be stopped using deltimer()
+#define TIMER_STOPPABLE			(1<<3)
+//To be used with TIMER_UNIQUE
+//prevents distinguishing identical timers with the wait variable
+#define TIMER_NO_HASH_WAIT		(1<<4)
+//Loops the timer repeatedly until qdeleted
+//In most cases you want a subsystem instead
+#define TIMER_LOOP				(1<<5)
+
+#define TIMER_ID_NULL -1
 
 #define INITIALIZATION_INSSATOMS 0	//New should not call Initialize
 #define INITIALIZATION_INNEW_MAPLOAD 1	//New should call Initialize(TRUE)
@@ -27,6 +47,7 @@ var/global/list/runlevel_flags = list(RUNLEVEL_LOBBY, RUNLEVEL_SETUP, RUNLEVEL_G
 #define INIT_ORDER_ATOMS	15
 #define INIT_ORDER_MACHINES 10
 #define INIT_ORDER_SHUTTLES 3
+#define INIT_ORDER_TIMER	1
 #define INIT_ORDER_DEFAULT	0
 #define INIT_ORDER_LIGHTING 0
 #define INIT_ORDER_AIR		-1
@@ -37,19 +58,20 @@ var/global/list/runlevel_flags = list(RUNLEVEL_LOBBY, RUNLEVEL_SETUP, RUNLEVEL_G
 
 // Subsystem fire priority, from lowest to highest priority
 // If the subsystem isn't listed here it's either DEFAULT or PROCESS (if it's a processing subsystem child)
-#define FIRE_PRIORITY_SHUTTLES		5
-#define FIRE_PRIORITY_ORBIT			8
-#define FIRE_PRIORITY_VOTE			9
+#define FIRE_PRIORITY_SHUTTLES	5
+#define FIRE_PRIORITY_ORBIT		8
+#define FIRE_PRIORITY_VOTE		9
 #define FIRE_PRIORITY_AI			10
 #define FIRE_PRIORITY_GARBAGE		15
 #define FIRE_PRIORITY_AIRFLOW		30
-#define FIRE_PRIORITY_AIR			35
-#define FIRE_PRIORITY_OBJ			40
+#define FIRE_PRIORITY_AIR		35
+#define FIRE_PRIORITY_PROCESS		35
+#define FIRE_PRIORITY_OBJ		40
 #define FIRE_PRIORITY_PROCESS		45
 #define FIRE_PRIORITY_DEFAULT		50
 #define FIRE_PRIORITY_PLANETS		75
-#define FIRE_PRIORITY_MACHINES		100
-#define FIRE_PRIORITY_OVERLAYS		500
+#define FIRE_PRIORITY_MACHINES	100
+#define FIRE_PRIORITY_OVERLAYS	500
 
 // Macro defining the actual code applying our overlays lists to the BYOND overlays list. (I guess a macro for speed)
 // TODO - I don't really like the location of this macro define.  Consider it. ~Leshana

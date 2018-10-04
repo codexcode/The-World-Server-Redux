@@ -7,7 +7,7 @@
 	var/gc_destroyed //Time when this object was destroyed.
 	var/weakref/weakref // Holder of weakref instance pointing to this datum
 	var/is_processing = FALSE // If this datum is in an MC processing list, this will be set to its name.
-
+	var/list/active_timers  //for SStimer
 #ifdef TESTING
 	var/tmp/running_find_references
 	var/tmp/last_find_references = 0
@@ -18,6 +18,15 @@
 // Return the appropriate QDEL_HINT; in most cases this is QDEL_HINT_QUEUE.
 /datum/proc/Destroy(force=FALSE)
 	weakref = null // Clear this reference to ensure it's kept for as brief duration as possible.
+
+	var/list/timers = active_timers
+	active_timers = null
+	for(var/thing in timers)
+		var/datum/timedevent/timer = thing
+		if (timer.spent)
+			continue
+		qdel(timer)
+
 	tag = null
 	nanomanager.close_uis(src)
 	return QDEL_HINT_QUEUE
