@@ -16,7 +16,8 @@
 	var/global/list/acceptable_items // List of the items you can put in
 	var/global/list/acceptable_reagents // List of the reagents you can put in
 	var/global/max_n_of_items = 0
-	clicksound = "button"
+	var/datum/looping_sound/microwave/soundloop
+
 
 
 // see code/modules/food/recipes_microwave.dm for recipes
@@ -25,8 +26,7 @@
 *   Initialising
 ********************/
 
-/obj/machinery/microwave/New()
-	..()
+/obj/machinery/microwave/initialize()
 	reagents = new/datum/reagents(100)
 	reagents.my_atom = src
 
@@ -55,6 +55,12 @@
 		acceptable_items |= /obj/item/weapon/reagent_containers/food/snacks/grown
 
 	RefreshParts()
+	soundloop = new(list(src), FALSE)
+	return ..()
+
+/obj/machinery/microwave/Destroy()
+	qdel(soundloop)
+	return ..()
 
 /*******************
 *   Item Adding
@@ -312,20 +318,19 @@
 
 /obj/machinery/microwave/proc/start()
 	src.visible_message("<span class='notice'>The microwave turns on.</span>", "<span class='notice'>You hear a microwave.</span>")
-	src.operating = 1
+	soundloop.start()
+	src.operating = TRUE
 	src.icon_state = "mw1"
 	src.updateUsrDialog()
 
 /obj/machinery/microwave/proc/abort()
-	src.operating = 0 // Turn it off again aferwards
-	src.icon_state = "mw"
-	src.updateUsrDialog()
+	operating = FALSE // Turn it off again aferwards
+	icon_state = "mw"
+	updateUsrDialog()
+	soundloop.stop()
 
 /obj/machinery/microwave/proc/stop()
-	playsound(src.loc, 'sound/machines/ding.ogg', 50, 1)
-	src.operating = 0 // Turn it off again aferwards
-	src.icon_state = "mw"
-	src.updateUsrDialog()
+	abort()
 
 /obj/machinery/microwave/proc/dispose()
 	for (var/obj/O in ((contents-component_parts)-circuit))
