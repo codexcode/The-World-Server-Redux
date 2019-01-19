@@ -35,9 +35,9 @@ var/global/list/faction_choices = list(
 	)
 
 var/global/list/antag_faction_choices = list(	//Should be populated after brainstorming. Leaving as blank in case brainstorming does not occur.
-	"Radical Socialist Alliance",
-	"Blue Mafia",
-	"The Gold Enigma",
+	"Worker's Union",
+	"Blue Moon Cartel",
+	"The Trust Fund",
 	"Coalition Against Detection",
 	"Free Information Society"
 	)
