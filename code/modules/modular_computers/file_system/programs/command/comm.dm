@@ -2,7 +2,7 @@
 #define STATE_MESSAGELIST	2
 #define STATE_VIEWMESSAGE	3
 #define STATE_STATUSDISPLAY	4
-#define STATE_ALERT_LEVEL	5
+// #define STATE_ALERT_LEVEL	5
 /datum/computer_file/program/comm
 	filename = "comm"
 	filedesc = "Command and Communications Program"
@@ -38,7 +38,7 @@
 	..()
 	crew_announcement.newscast = 1
 
-/datum/nano_module/program/comm/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = 1, var/datum/topic_state/state = GLOB.default_state)
+/datum/nano_module/program/comm/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = 1, var/datum/topic_state/state = default_state)
 
 	var/list/data = host.initial_data()
 
@@ -61,9 +61,9 @@
 	data["state"] = current_status
 	data["isAI"] = issilicon(usr)
 	data["authenticated"] = is_autenthicated(user)
-	data["boss_short"] = GLOB.using_map.boss_short
+	data["boss_short"] = using_map.boss_short
 
-	var/decl/security_state/security_state = decls_repository.get_decl(GLOB.using_map.security_state)
+	var/decl/security_state/security_state = decls_repository.get_decl(using_map.security_state)
 	data["current_security_level_ref"] = any2ref(security_state.current_security_level)
 	data["current_security_level_title"] = security_state.current_security_level.name
 
@@ -94,7 +94,7 @@
 			processed_evac_options[++processed_evac_options.len] = option
 	data["evac_options"] = processed_evac_options
 
-	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
+	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if(!ui)
 		ui = new(user, src, ui_key, "communication.tmpl", name, 550, 420, state = state)
 		ui.auto_update_layout = 1
@@ -208,6 +208,8 @@
 						post_status("image", href_list["image"])
 					else
 						post_status(href_list["target"])
+						
+/*						
 		if("setalert")
 			. = 1
 			if(is_autenthicated(user) && !issilicon(usr) && ntn_cont && ntn_comm)
@@ -222,6 +224,8 @@
 				to_chat(usr, "You press the button, but a red light flashes and nothing happens.") //This should never happen
 
 			current_status = STATE_DEFAULT
+			
+*/
 		if("viewmessage")
 			. = 1
 			if(is_autenthicated(user) && ntn_comm)
@@ -248,7 +252,7 @@
 #undef STATE_MESSAGELIST
 #undef STATE_VIEWMESSAGE
 #undef STATE_STATUSDISPLAY
-#undef STATE_ALERT_LEVEL
+// #undef STATE_ALERT_LEVEL
 
 /*
 General message handling stuff
@@ -329,12 +333,12 @@ var/last_message_id = 0
 	if(isnull(emergency))
 		emergency = 1
 
-	if(!GLOB.universe.OnShuttleCall(usr))
+	if(!universe.OnShuttleCall(usr))
 		to_chat(user, "<span class='notice'>Cannot establish a bluespace connection.</span>")
 		return
 
 	if(deathsquad.deployed)
-		to_chat(user, "[GLOB.using_map.boss_short] will not allow an evacuation to take place. Consider all contracts terminated.")
+		to_chat(user, "[using_map.boss_short] will not allow an evacuation to take place. Consider all contracts terminated.")
 		return
 
 	if(evacuation_controller.deny)
@@ -359,5 +363,5 @@ var/last_message_id = 0
 	if(.)
 		//delay events in case of an autotransfer
 		var/delay = evacuation_controller.evac_arrival_time - world.time + (2 MINUTES)
-		GLOB.event_manager.delay_events(EVENT_LEVEL_MODERATE, delay)
-		GLOB.event_manager.delay_events(EVENT_LEVEL_MAJOR, delay)
+		event_manager.delay_events(EVENT_LEVEL_MODERATE, delay)
+		event_manager.delay_events(EVENT_LEVEL_MAJOR, delay)
