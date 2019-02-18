@@ -7,9 +7,29 @@
 	available_on_ntnet = 1					// ... but we want it to be available for download.
 	nanomodule_path = /datum/nano_module/nt_explorer/	// Path of relevant nano module. The nano module is defined further in the file.
 	usage_flags = PROGRAM_ALL
-  
-  var/current_website
-  
- /datum/computer_file/program/nt_explorer/New()
-	..()
-	current_website = null
+	
+
+	
+/datum/nano_module/nt_explorer
+	var/datum/website/current_website
+	
+/datum/website
+	var/name = "404 Error"
+	var/title = "404 Error - Page not found"
+	var/url
+	var/requires_password = FALSE 	//Set this to either true or false.
+	var/password = null
+	var/web_contents
+	
+/datum/website/proc/get_web_header()
+	web_contents += "<b>[url]</b>"	
+	
+/datum/website/proc/get_web_content()
+	web_contents += "<b>[name]</b>"
+	
+		
+	
+/datum/website/ntoogle
+	name = "NToogle"
+	url = "ntgoogle.nt"
+
