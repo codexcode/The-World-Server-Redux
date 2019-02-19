@@ -22,14 +22,20 @@
 	var/web_contents
 	
 /datum/website/proc/get_web_header()
-	web_contents += "<b>[url]</b>"	
+	web_contents += "<b>[url]</b><br>"
 	
 /datum/website/proc/get_web_content()
-	web_contents += "<b>[name]</b>"
+	web_contents += "<h1>[name]</h1>
+<hr />
+<p>Unable to connect to server at <em>www.ntnet.com</em>. Please reload the page or try again later.</p>
+<hr />
+<p style="text-align: right;"><sub><em>error ref: 223</em></sub></p>"
 	
 		
 	
 /datum/website/ntoogle
 	name = "NToogle"
 	url = "ntgoogle.nt"
+
+
 
