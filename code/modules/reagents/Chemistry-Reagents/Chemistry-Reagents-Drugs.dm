@@ -10,6 +10,7 @@
 	color = "#f2f2f2"
 	scannable = 1
 	overdose = REAGENTS_OVERDOSE
+	addiction_threshold = 25
 
 /datum/reagent/drug/affect_blood(var/mob/living/carbon/M)
 

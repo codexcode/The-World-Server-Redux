@@ -43,6 +43,9 @@
 	var/glass_desc = "It's a glass of... what, exactly?"
 	var/list/glass_special = null // null equivalent to list()
 
+	var/addiction_threshold = 0
+	var/addiction_stage = 0
+
 /datum/reagent/proc/remove_self(var/amount) // Shortcut
 	if(holder)
 		holder.remove_reagent(id, amount)
@@ -145,3 +148,23 @@
 
 /datum/reagent/proc/reaction_mob(var/mob/target)
 	touch_mob(target)
+
+/datum/reagent/proc/addiction_act_stage1(var/mob/living/M as mob)
+	if(prob(30))
+		M << "<span class = 'notice'>You feel like some [name] right about now.</span>"
+	return
+
+/datum/reagent/proc/addiction_act_stage2(var/mob/living/M as mob)
+	if(prob(30))
+		M << "<span class = 'notice'>You feel like you need [name]. You just can't get enough.</span>"
+	return
+
+/datum/reagent/proc/addiction_act_stage3(var/mob/living/M as mob)
+	if(prob(30))
+		M << "<span class = 'danger'>You have an intense craving for [name].</span>"
+	return
+
+/datum/reagent/proc/addiction_act_stage4(var/mob/living/M as mob)
+	if(prob(30))
+		M << "<span class = 'userdanger'>You're not feeling good at all! You really need some [name].</span>"
+	return

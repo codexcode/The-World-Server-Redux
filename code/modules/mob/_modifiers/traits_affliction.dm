@@ -7,7 +7,7 @@
 	on_expired_text = "<span class='notice'>You feel like you should kick your drug habit.</span>"
 
 	var/medical_record_text = "Patient has a history of hard drugs."
-	var/drug_list = list("crank", "krokodil", "morphine", "happiness", "methamphetamine") //List of possible IDs
+	var/drug_list = list("cocaine", "ecstasy") //List of possible IDs
 	var/reagent_id //ID picked from list
 	var/datum/reagent/reagent_type //If this is defined, reagent_id will be unused and the defined reagent type will be instead.
 	var/datum/reagent/reagent_instance
@@ -19,8 +19,8 @@
 	var/obj/item/accessory_instance
 	var/tick_counter = 0
 
-/datum/modifier/addiction/on_applied(var/mob/living/H)
-	var/quirk_holder = H
+/datum/modifier/addiction/on_applied(var/mob/living/carbon/human/H)
+	var/mob/living/carbon/human/quirk_holder = H
 	reagent_id = pick(drug_list)
 	if (!reagent_type)
 		var/datum/reagent/prot_holder = chemical_reagents_list[reagent_id]
@@ -36,8 +36,13 @@
 		for(var/i in 1 to 7)
 			var/obj/item/weapon/reagent_containers/pill/P = new(drug_instance)
 			P.icon_state = pill_state
-			P.reagents.add_reagent(reagent_id, 1)
+			P.reagents.add_reagent(reagent_id, 10)
 
-	if(quirk_holder.equip_to_storage(P))
+	if(H.equip_to_appropriate_slot(drug_instance))
 		announce_drugs()
+
+
+/datum/modifier/addiction/proc/announce_drugs(var/mob/living/carbon/human/H)
+	to_chat(H, "<span class='boldnotice'>There is a [drug_instance.name] of [reagent_instance.name] you've taken with you today. <b>Should you try to get better, or get some more?</b> That's up to you now...</span>")
+
 

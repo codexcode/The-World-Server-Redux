@@ -5,6 +5,9 @@
 	var/total_volume = 0
 	var/maximum_volume = 100
 	var/atom/my_atom = null
+	var/last_tick = 1
+	var/addiction_tick = 1
+	var/list/datum/reagent/addiction_list = new/list()
 
 /datum/reagents/New(var/max = 100, atom/A = null)
 	..()

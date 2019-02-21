@@ -11,7 +11,7 @@
 	if(istype(parent_mob))
 		parent = parent_mob
 
-/datum/reagents/metabolism/proc/metabolize()
+/datum/reagents/metabolism/proc/metabolize(var/mob/M)
 
 	var/metabolism_type = 0 //non-human mobs
 	if(ishuman(parent))
@@ -20,6 +20,30 @@
 
 	for(var/datum/reagent/current in reagent_list)
 		current.on_mob_life(parent, metabolism_type, src)
+
+	if(addiction_tick == 6)
+		addiction_tick = 1
+		for(var/A in addiction_list)
+			var/datum/reagent/R = A
+			if(M && R)
+				if(R.addiction_stage < 0)
+					R.addiction_stage++
+				if(R.addiction_stage >= 0 && R.addiction_stage <= 10)
+					R.addiction_act_stage1(M)
+					R.addiction_stage++
+				if(R.addiction_stage >= 10 && R.addiction_stage <= 20)
+					R.addiction_act_stage2(M)
+					R.addiction_stage++
+				if(R.addiction_stage >= 20 && R.addiction_stage <= 30)
+					R.addiction_act_stage3(M)
+					R.addiction_stage++
+				if(R.addiction_stage > 30 && R.addiction_stage <= 40)
+					R.addiction_act_stage4(M)
+				if(R.addiction_stage > 40)
+					M << "<span class = 'notice'>You feel like you've gotten over your need for [R.name].</span>"
+					addiction_list.Remove(R)
+	addiction_tick++
+	last_tick++
 	update_total()
 
 // "Specialized" metabolism datums
