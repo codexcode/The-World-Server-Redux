@@ -275,3 +275,8 @@
 	desc = "Boilerplate racism for jellos goes here."
 	mutually_exclusive = list(/datum/trait/modifier/mental/xenophobe)
 */
+
+/datum/trait/modifier/mental/smoker
+	name = "Smoker"
+	desc = "Does smoking make you cool or a fool? Who knows? These cigarettes are getting expensive, though."
+	mutually_exclusive = list(/datum/modifier/addiction/smoker)
