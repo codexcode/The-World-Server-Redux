@@ -6,13 +6,17 @@ var/datum/antagonist/thug/thugs
 	role_text = "Thug"
 	role_text_plural = "Thugs"
 	bantype = "renegade"
-	restricted_jobs = list("AI", "Cyborg","Mayor","Chief of Police","Chief Medical Officer","Chief Engineer","Research Director","Judge")
+	restricted_jobs = list("AI", "Cyborg", "Police Officer", "Prison Warden", "Detective", "Judge", "Mayor", "City Clerk", "Chief of Police", "Chief Engineer", "Research Director", "Chief Medical Officer")
+	protected_jobs = list("Police Officer", "Prison Warden", "Detective", "Judge", "Mayor", "City Clerk", "Chief of Police", "Chief Engineer", "Research Director", "Chief Medical Officer")
+	roundstart_restricted = list("AI", "Cyborg", "Police Officer", "Prison Warden", "Detective", "Judge", "Mayor", "City Clerk", "Chief of Police", "Chief Engineer", "Research Director", "Chief Medical Officer")
+
+
 	welcome_text = "Sometimes, people just need to get messed up.Luckily, that's what you're here to do."
 	antag_text = "You are a <b>thug</b>! Within the server rules, do whatever it is \
 		that you came to the city to do, be it violence, drug dealing, theft, or \
 		just extreme self-defense. Try to make sure other players have <i>fun</i>! \
 		This role is for <b>crime breaking gang antics not murderboning.</b><br> \
-		<br>This is a <b>teamwork role</b>, roleplay with your fellow gang members \
+		<br>This is a <b>teamwork role</b> - look out for and stick with your crew, roleplay with your fellow gang members \
 		and brainstorm what you will do. <b>AOOC</b> may be used."
 	flags = ANTAG_SUSPICIOUS | ANTAG_IMPLANT_IMMUNE | ANTAG_RANDSPAWN | ANTAG_VOTABLE
 	can_use_aooc = TRUE
@@ -27,6 +31,7 @@ var/datum/antagonist/thug/thugs
 
 	var/hat
 	var/uniform
+	var/glasses
 	var/suit
 	var/shoes
 	var/gloves
@@ -43,7 +48,7 @@ var/datum/antagonist/thug/thugs
 	msg += "<b>Your gang:</b><br>"
 	for (var/mob/living/carbon/human/C in mob_list)
 		if(C.mind.special_role == "Thug")
-			msg += "[nick] <b>[C.name]</b>, the [C.job]. <br>"
+			msg += "[nick] <b>[C.name]</b>, the [C.job]. <br><p>"
 
 	gang_mob << "[msg]"
 
@@ -61,7 +66,8 @@ var/datum/antagonist/thug/thugs
 			shoes = /obj/item/clothing/shoes/hitops/black
 			accessory = /obj/item/clothing/accessory/scarf/zebra
 			gloves = /obj/item/clothing/gloves/knuckledusters
-			weapon = /obj/item/weapon/gun/projectile/pirate
+			weapon = /obj/item/weapon/material/butterfly/switchblade
+
 			nick = "Comrade"
 
 		if("biker_gang")
@@ -71,7 +77,7 @@ var/datum/antagonist/thug/thugs
 			shoes = /obj/item/clothing/shoes/boots/combat
 			accessory = /obj/item/clothing/accessory/bracelet/material/gold
 			gloves = /obj/item/clothing/gloves/fingerless
-			weapon = /obj/item/weapon/gun/projectile/luger/brown
+			weapon = /obj/item/weapon/material/knife/tacknife/survival
 			nick = "Biker"
 
 		if("bandit")
@@ -81,7 +87,7 @@ var/datum/antagonist/thug/thugs
 			shoes = /obj/item/clothing/shoes/boots/combat
 			accessory = /obj/item/clothing/mask/balaclava
 			gloves = /obj/item/clothing/gloves/brown
-			weapon = /obj/item/weapon/gun/projectile/pirate/thug
+			weapon = /obj/item/weapon/material/butterfly/boxcutter
 			nick = "Bandit"
 
 /datum/antagonist/thug/equip(var/mob/living/carbon/human/player)
