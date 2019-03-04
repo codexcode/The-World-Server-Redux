@@ -8,12 +8,13 @@
 	nanomodule_path = /datum/nano_module/nt_explorer/	// Path of relevant nano module. The nano module is defined further in the file.
 	usage_flags = PROGRAM_ALL
 	
-
+var/list/website_list = list()
 	
 /datum/nano_module/nt_explorer
 	var/datum/website/current_website
-	
-/datum/website
+	var/can_browse = 1
+			
+/datum/website/404
 	var/name = "404 Error"
 	var/title = "404 Error - Page not found"
 	var/url
@@ -36,6 +37,35 @@
 /datum/website/ntoogle
 	name = "NToogle"
 	url = "ntgoogle.nt"
+	
+/datum/nano_module/nt_explorer/proc/set_to_url(/datum/website/W)
+	current_website = W
 
 
+/datum/nano_module/nt_explorer/proc/browse()
+	var/searched_url = sanitize(input(user, "Input the web address.", "NT Explorer", null)  as text)
+	if(!searched_url)
+		return
+		
+	for(/datum/website/W)
+		if(searched_url = W.url)
+			set_to_url(W)
+		else
+			set_to_url(/datum/website/404)
+			
 
+			
+/datum/nano_module/nt_explorer/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = 1, var/datum/topic_state/state = default_state)
+	var/list/data = list()
+	if(program)
+		data = program.get_header_data()
+
+	data["current_website"] = current_website
+
+	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
+	if (!ui)
+		ui = new(user, src, ui_key, "arcade_classic.tmpl", "Defeat [enemy_name]", 500, 350, state = state)
+		if(program.update_layout())
+			ui.auto_update_layout = 1
+		ui.set_initial_data(data)
+		ui.open()
