@@ -354,7 +354,7 @@
 	for(var/datum/data/record/R in L)
 		if(R.fields[field] == value)
 			return R
-
+/*
 /proc/GetAssignment(var/mob/living/carbon/human/H)
 	if(H.mind.role_alt_title)
 		return H.mind.role_alt_title
@@ -364,3 +364,4 @@
 		return H.job
 	else
 		return "Unassigned"
+*/
