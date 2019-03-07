@@ -62,6 +62,10 @@
 
 #define map_image_file_name(z_level) "[using_map.path]-[z_level].png"
 
+#define sequential_id(key) uniqueness_repository.Generate(/datum/uniqueness_generator/id_sequential, key)
+
+#define random_id(key,min_id,max_id) uniqueness_repository.Generate(/datum/uniqueness_generator/id_random, key, min_id, max_id)
+
 #define RANDOM_BLOOD_TYPE pick(4;"O-", 36;"O+", 3;"A-", 28;"A+", 1;"B-", 20;"B+", 1;"AB-", 5;"AB+")
 
 #define isclient(A) istype(A, /client)
@@ -69,6 +73,7 @@
 #define to_chat(target, message) target << message
 #define to_world(message) world << message
 #define to_world_log(message) world.log << message
+
 // TODO - Baystation has this log to crazy places. For now lets just world.log, but maybe look into it later.
 #define log_world(message) world.log << message
 #define to_file(file_entry, source_var) file_entry << source_var
@@ -76,6 +81,12 @@
 
 
 #define CanInteract(user, state) (CanUseTopic(user, state) == STATUS_INTERACTIVE)
+
+#define CanInteractWith(user, target, state) (target.CanUseTopic(user, state) == STATUS_INTERACTIVE)
+
+#define CanPhysicallyInteract(user) CanInteract(user, physical_state)
+
+#define CanPhysicallyInteractWith(user, target) CanInteractWith(user, target, physical_state)
 
 #define qdel_null_list(x) if(x) { for(var/y in x) { qdel(y) } ; x = null }
 
