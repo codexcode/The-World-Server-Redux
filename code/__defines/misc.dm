@@ -41,39 +41,6 @@
 #define 	  LIFE_HUD 10 // STATUS_HUD that only reports dead or alive
 #define     TOTAL_HUDS 10 // Total number of HUDs. Like body layers, and other things, it comes up sometimes.
 
-//some colors
-#define COLOR_WHITE   			"#FFFFFF"
-#define COLOR_SILVER  			"#C0C0C0"
-#define COLOR_GRAY    			"#808080"
-#define COLOR_BLACK   			"#000000"
-#define COLOR_RED     			"#FF0000"
-#define COLOR_MAROON 			"#800000"
-#define COLOR_YELLOW  			"#FFFF00"
-#define COLOR_OLIVE  			"#808000"
-#define COLOR_LIME   			"#00FF00"
-#define COLOR_GREEN   			"#008000"
-#define COLOR_CYAN    			"#00FFFF"
-#define COLOR_TEAL    			"#008080"
-#define COLOR_BLUE    			"#0000FF"
-#define COLOR_NAVY    			"#000080"
-#define COLOR_PINK    			"#FF00FF"
-#define COLOR_PURPLE  			"#800080"
-#define COLOR_ORANGE  			"#FF9900"
-#define COLOR_LUMINOL 			"#66FFFF"
-#define COLOR_BEIGE 			"#CEB689"
-#define COLOR_BLUE_GRAY 		"#6A97B0"
-#define COLOR_BROWN 			"#B19664"
-#define COLOR_DARK_BROWN 		"#917448"
-#define COLOR_DARK_ORANGE 		"#B95A00"
-#define COLOR_GREEN_GRAY 		"#8DAF6A"
-#define COLOR_RED_GRAY 			"#AA5F61"
-#define COLOR_PALE_BLUE_GRAY	"#8BBBD5"
-#define COLOR_PALE_GREEN_GRAY 	"#AED18B"
-#define COLOR_PALE_RED_GRAY		"#CC9090"
-#define COLOR_PALE_PURPLE_GRAY	"#BDA2BA"
-#define COLOR_PURPLE_GRAY 		"#A2819E"
-#define COLOR_RED_LIGHT         "#FF3333"
-#define COLOR_DEEP_SKY_BLUE     "#00e1ff"
 
 
 
@@ -110,6 +77,7 @@
 #define MAX_RECORD_LENGTH	  24576
 #define MAX_LNAME_LEN         64
 #define MAX_NAME_LEN          52
+#define MAX_DESC_LEN          128
 #define MAX_TEXTFILE_LENGTH 128000		// 512GQ file
 
 // Event defines.
@@ -297,6 +265,7 @@ var/global/list/##LIST_NAME = list();\
 #define NTNETSPEED_LOWSIGNAL 0.025	// GQ/s transfer speed when the device is wirelessly connected and on Low signal
 #define NTNETSPEED_HIGHSIGNAL 0.1	// GQ/s transfer speed when the device is wirelessly connected and on High signal
 #define NTNETSPEED_ETHERNET 0.5		// GQ/s transfer speed when the device is using wired connection
+#define NTNETSPEED_DOS_AMPLIFICATION 2.5	// Multiplier for Denial of Service program. Resulting load on NTNet relay is this multiplied by NTNETSPEED of the device
 
 // Program bitflags
 #define PROGRAM_ALL 		0x1F
@@ -313,3 +282,15 @@ var/global/list/##LIST_NAME = list();\
 // Caps for NTNet logging. Less than 10 would make logging useless anyway, more than 500 may make the log browser too laggy. Defaults to 100 unless user changes it.
 #define MAX_NTNET_LOGS 500
 #define MIN_NTNET_LOGS 10
+
+// secure gun authorization settings
+#define UNAUTHORIZED      0
+#define AUTHORIZED        1
+#define ALWAYS_AUTHORIZED 2
+
+//Built-in email accounts
+#define EMAIL_DOCUMENTS "document.server@internal-services.net"
+#define EMAIL_SYSADMIN  "admin@internal-services.net"
+#define EMAIL_BROADCAST "broadcast@internal-services.net"
+
+#define LEGACY_RECORD_STRUCTURE(X, Y) list(##X);/datum/computer_file/data/##Y/var/list/fields[0];/datum/computer_file/data/##Y/New(){..();##X.Add(src);}/datum/computer_file/data/##Y/Destroy(){. = ..();##X.Remove(src);}
