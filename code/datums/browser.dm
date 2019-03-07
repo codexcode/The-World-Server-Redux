@@ -165,6 +165,12 @@
 	//world << "OnClose [user]: [windowid] : ["on-close=\".windowclose [param]\""]"
 
 
+/datum/browser/proc/update(var/force_open = 0, var/use_onclose = 1)
+	if(force_open)
+		open(use_onclose)
+	else
+		send_output(user, get_content(), "[window_id].browser")
+		
 // the on-close client verb
 // called when a browser popup window is closed after registering with proc/onclose()
 // if a valid atom reference is supplied, call the atom's Topic() with "close=1"
