@@ -7,6 +7,16 @@ var/global/defer_powernet_rebuild = 0      // True if net rebuild will be called
 #define MEGAWATTS *1000000
 #define GIGAWATTS *1000000000
 
+// These are used by supermatter and supermatter monitor program, mostly for UI updating purposes. Higher should always be worse!
+#define SUPERMATTER_ERROR -1		// Unknown status, shouldn't happen but just in case.
+#define SUPERMATTER_INACTIVE 0		// No or minimal energy
+#define SUPERMATTER_NORMAL 1		// Normal operation
+#define SUPERMATTER_NOTIFY 2		// Ambient temp > 80% of CRITICAL_TEMPERATURE
+#define SUPERMATTER_WARNING 3		// Ambient temp > CRITICAL_TEMPERATURE OR integrity damaged
+#define SUPERMATTER_DANGER 4		// Integrity < 50%
+#define SUPERMATTER_EMERGENCY 5		// Integrity < 25%
+#define SUPERMATTER_DELAMINATING 6	// Pretty obvious. 
+
 // Doors!
 #define DOOR_CRUSH_DAMAGE 40
 #define ALIEN_SELECT_AFK_BUFFER  1    // How many minutes that a person can be AFK before not being allowed to be an alien.
