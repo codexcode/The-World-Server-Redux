@@ -11,7 +11,7 @@
 var/list/website_list = list()
 
 /datum/nano_module/nt_explorer
-	var/datum/website/current_website
+	var/datum/website/current_website = /datum/website/ntoogle
 	var/can_browse = 1
 
 /datum/website
@@ -65,10 +65,11 @@ var/list/website_list = list()
 		data = program.get_header_data()
 
 	data["current_website"] = current_website
+	data["url"] = current_website.url
 
 	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
-		ui = new(user, src, ui_key, "arcade_classic.tmpl", "", 500, 350, state = state)
+		ui = new(user, src, ui_key, "ntnet_explorer.tmpl", "", 500, 350, state = state)
 		if(program.update_layout())
 			ui.auto_update_layout = 1
 		ui.set_initial_data(data)
