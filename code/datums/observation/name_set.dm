@@ -8,7 +8,7 @@
 //			/old_name: name before the change
 //			/new_name: name after the change
 
-GLOBAL_DATUM_INIT(name_set_event, /decl/observ/name_set, new)
+var/list/name_set_event = list(/decl/observ/name_set, new)
 
 /decl/observ/name_set
 	name = "Name Set"
