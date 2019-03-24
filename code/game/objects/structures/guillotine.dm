@@ -1,6 +1,6 @@
 #define GUILLOTINE_BLADE_MAX_SHARP  10 // This is maxiumum sharpness and will decapitate without failure
 #define GUILLOTINE_DECAP_MIN_SHARP  7  // Minimum amount of sharpness for decapitation. Any less and it will just do severe brute damage
-#define GUILLOTINE_ANIMATION_LENGTH 9 // How many deciseconds the animation is 
+#define GUILLOTINE_ANIMATION_LENGTH 9 // How many deciseconds the animation is
 #define GUILLOTINE_BLADE_RAISED     1
 #define GUILLOTINE_BLADE_MOVING     2
 #define GUILLOTINE_BLADE_DROPPED    3
@@ -22,7 +22,7 @@
 	density = TRUE
 	max_buckled_mobs = 1
 	buckle_lying = FALSE
-	buckle_prevents_pull = TRUE
+//	buckle_prevents_pull = TRUE
 	layer = ABOVE_MOB_LAYER
 	var/blade_status = GUILLOTINE_BLADE_RAISED
 	var/blade_sharpness = GUILLOTINE_BLADE_MAX_SHARP // How sharp the blade is
@@ -71,11 +71,12 @@
 		if (GUILLOTINE_BLADE_DROPPED)
 			blade_status = GUILLOTINE_BLADE_MOVING
 			icon_state = "guillotine_raise"
-			addtimer(CALLBACK(src, .proc/raise_blade), GUILLOTINE_ANIMATION_LENGTH)
+			spawn(GUILLOTINE_ANIMATION_LENGTH)
+				raise_blade()
 			return
 		if (GUILLOTINE_BLADE_RAISED)
 			if (LAZYLEN(buckled_mobs))
-				if (user.a_intent == INTENT_HARM)
+				if (user.a_intent == "harm")
 					user.visible_message("<span class='warning'>[user] begins to pull the lever!</span>",
 						                 "<span class='warning'>You begin to the pull the lever.</span>")
 					current_action = GUILLOTINE_ACTION_INUSE
@@ -84,7 +85,8 @@
 						current_action = 0
 						blade_status = GUILLOTINE_BLADE_MOVING
 						icon_state = "guillotine_drop"
-						addtimer(CALLBACK(src, .proc/drop_blade, user), GUILLOTINE_ANIMATION_LENGTH - 2) // Minus two so we play the sound and decap faster
+						spawn(GUILLOTINE_ANIMATION_LENGTH - 2)
+							drop_blade()
 					else
 						current_action = 0
 				else
@@ -97,7 +99,8 @@
 			else
 				blade_status = GUILLOTINE_BLADE_MOVING
 				icon_state = "guillotine_drop"
-				addtimer(CALLBACK(src, .proc/drop_blade), GUILLOTINE_ANIMATION_LENGTH)
+				spawn(GUILLOTINE_ANIMATION_LENGTH)
+					drop_blade()
 
 /obj/structure/guillotine/proc/raise_blade()
 	blade_status = GUILLOTINE_BLADE_RAISED
@@ -140,7 +143,8 @@
 			for(var/mob/M in viewers(src, 7))
 				var/mob/living/carbon/human/C = M
 				if (ishuman(M))
-					addtimer(CALLBACK(C, /mob/.proc/emote, "clap"), delay_offset * 0.3)
+					spawn(delay_offset * 0.3)
+						M.emote("clap")
 					delay_offset++
 		else
 			H.apply_damage(15 * blade_sharpness, BRUTE, head)
@@ -158,7 +162,7 @@
 		add_fingerprint(user)
 		if (blade_status == GUILLOTINE_BLADE_SHARPENING)
 			return
-		
+
 		if (blade_status == GUILLOTINE_BLADE_RAISED)
 			if (blade_sharpness < GUILLOTINE_BLADE_MAX_SHARP)
 				blade_status = GUILLOTINE_BLADE_SHARPENING
@@ -230,10 +234,10 @@
 	if (LAZYLEN(buckled_mobs))
 		if (!silent)
 			to_chat(user, "<span class='warning'>Can't unfasten, someone's strapped in!</span>")
-		return FAILED_UNFASTEN
+		return 0
 
 	if (current_action)
-		return FAILED_UNFASTEN
+		return 0
 
 	return ..()
 

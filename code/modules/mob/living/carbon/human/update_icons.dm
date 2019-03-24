@@ -970,7 +970,7 @@ var/global/list/damage_icon_parts = list() //see UpdateDamageIcon()
 	if(total.overlays.len)
 		overlays_standing[SURGERY_LAYER] = total
 		apply_layer(SURGERY_LAYER)
-		
+
 // Only renders the head of the human
 /mob/living/carbon/human/proc/update_body_parts_head_only()
 	if (!dna)
@@ -994,9 +994,11 @@ var/global/list/damage_icon_parts = list() //see UpdateDamageIcon()
 		if(lip_style && (LIPS in dna.species.species_traits))
 			var/mutable_appearance/lip_overlay = mutable_appearance('icons/mob/human_face.dmi', "lips_[lip_style]", -BODY_LAYER)
 			lip_overlay.color = lip_color
+/*
 			if(OFFSET_FACE in dna.species.offset_features)
 				lip_overlay.pixel_x += dna.species.offset_features[OFFSET_FACE][1]
 				lip_overlay.pixel_y += dna.species.offset_features[OFFSET_FACE][2]
+*/
 			add_overlay(lip_overlay)
 
 		// eyes
@@ -1009,15 +1011,17 @@ var/global/list/damage_icon_parts = list() //see UpdateDamageIcon()
 				eye_overlay = mutable_appearance('icons/mob/human_face.dmi', "eyes", -BODY_LAYER)
 			if((EYECOLOR in dna.species.species_traits) && has_eyes)
 				eye_overlay.color = "#" + eye_color
+/*
 			if(OFFSET_FACE in dna.species.offset_features)
 				eye_overlay.pixel_x += dna.species.offset_features[OFFSET_FACE][1]
 				eye_overlay.pixel_y += dna.species.offset_features[OFFSET_FACE][2]
+*/
 			add_overlay(eye_overlay)
 
 	dna.species.handle_hair(src)
 
 	update_inv_head()
-	update_inv_wear_mask() 
+	update_inv_wear_mask()
 
 //Human Overlays Indexes/////////
 #undef MUTATIONS_LAYER
