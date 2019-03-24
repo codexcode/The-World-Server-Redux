@@ -103,6 +103,7 @@ datum/preferences
 	var/list/flavor_texts = list()
 	var/list/flavour_texts_robot = list()
 
+	var/public_record = ""
 	var/med_record = ""
 	var/sec_record = ""
 	var/gen_record = ""

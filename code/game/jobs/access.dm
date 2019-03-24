@@ -17,6 +17,14 @@
 ///obj/item/proc/GetAccess()
 //	return list()
 
+//Checks if the access (constant or list) is contained in one of the entries of access_patterns, a list of lists.
+/proc/has_access_pattern(list/access_patterns, access)
+	if(!islist(access))
+		access = list(access)
+	for(var/access_pattern in access_patterns)
+		if(has_access(access_pattern, access))
+			return 1
+
 /atom/movable/proc/GetAccess()
 	var/obj/item/weapon/card/id/id = GetIdCard()
 	return id ? id.GetAccess() : list()

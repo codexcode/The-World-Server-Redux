@@ -74,6 +74,7 @@
 	var/real_name = null
 	var/nickname = null
 	var/flavor_text = ""
+	var/public_record = ""
 	var/med_record = ""
 	var/sec_record = ""
 	var/gen_record = ""

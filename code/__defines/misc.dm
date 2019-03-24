@@ -310,6 +310,12 @@ var/global/list/##LIST_NAME = list();\
 #define PROGRAM_STATE_BACKGROUND 1
 #define PROGRAM_STATE_ACTIVE 2
 
+
+//Built-in email accounts
+#define EMAIL_DOCUMENTS "document.server@pollux.gov"
+#define EMAIL_SYSADMIN  "admin@pollux.gov"
+#define EMAIL_BROADCAST "broadcast@pollux.gov"
+
 // Caps for NTNet logging. Less than 10 would make logging useless anyway, more than 500 may make the log browser too laggy. Defaults to 100 unless user changes it.
 #define MAX_NTNET_LOGS 500
 #define MIN_NTNET_LOGS 10
