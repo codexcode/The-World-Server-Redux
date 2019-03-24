@@ -19,7 +19,7 @@ var/datum/announcement/minor/captain_announcement = new(do_newscast = 1)
 	economic_modifier = 20
 
 	minimum_character_age = 30
-	ideal_character_age = 50 // Old geezer captains ftw // Get your MILF/DILF fetish out of here
+	ideal_character_age = 50 // Old geezer captains ftw // Get your MILF/DILF fetish out of here //OwO What's this?
 
 	outfit_type = /decl/hierarchy/outfit/job/heads/captain
 //	alt_titles = list("Site Manager", "Overseer")
@@ -83,13 +83,13 @@ var/datum/announcement/minor/captain_announcement = new(do_newscast = 1)
 
 	outfit_type = /decl/hierarchy/outfit/job/heads/hop
 
-	access = list(access_security, access_sec_doors, access_brig, access_forensics_lockers,
+	access = list(access_security, access_bodyguard, access_sec_doors, access_brig, access_forensics_lockers,
 			            access_medical, access_engine, access_change_ids, access_ai_upload, access_eva, access_heads,
 			            access_all_personal_lockers, access_maint_tunnels, access_bar, access_janitor, access_construction, access_morgue,
 			            access_crematorium, access_kitchen, access_cargo, access_cargo_bot, access_mailsorting, access_qm, access_hydroponics, access_lawyer,
 			            access_chapel_office, access_library, access_research, access_mining, access_heads_vault, access_mining_station,
 			            access_hop, access_RC_announce, access_keycard_auth, access_gateway)
-	minimal_access = list(access_security, access_sec_doors, access_brig, access_forensics_lockers,
+	minimal_access = list(access_security, access_bodyguard, access_sec_doors, access_brig, access_forensics_lockers,
 			            access_medical, access_engine, access_change_ids, access_ai_upload, access_eva, access_heads,
 			            access_all_personal_lockers, access_maint_tunnels, access_bar, access_janitor, access_construction, access_morgue,
 			            access_crematorium, access_kitchen, access_cargo, access_cargo_bot, access_mailsorting, access_qm, access_hydroponics, access_lawyer,
@@ -105,13 +105,14 @@ var/datum/announcement/minor/captain_announcement = new(do_newscast = 1)
 	total_positions = 1
 	spawn_positions = 1
 	department_flag = CIVILIAN
+	req_admin_notify = 1
 	supervisors = "government officials and the President"
 	selection_color = "#1D1D4F"
 	idtype = /obj/item/weapon/card/id/heads/judge
 	economic_modifier = 13
-	access = list(access_judge, access_sec_doors, access_maint_tunnels, access_heads)
-	minimal_access = list(access_judge, access_sec_doors, access_heads)
-	minimal_player_age = 7
+	access = list(access_judge, access_warrant, access_sec_doors, access_maint_tunnels, access_heads)
+	minimal_access = list(access_judge, access_warrant, access_sec_doors, access_heads)
+	minimal_player_age = 1
 	minimum_character_age = 25
 	alt_titles = list("Magistrate")
 

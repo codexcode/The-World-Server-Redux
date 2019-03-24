@@ -43,6 +43,7 @@ var/global/datum/controller/gameticker/ticker
 	'sound/music/starvetheego.ogg')
 
 	send2mainirc("Server lobby is loaded and open at byond://[config.serverurl ? config.serverurl : (config.server ? config.server : "[world.address]:[world.port]")]")
+	global_initialize_webhooks()
 
 	do
 		pregame_timeleft = 180
@@ -397,6 +398,7 @@ var/global/datum/controller/gameticker/ticker
 
 /datum/controller/gameticker/proc/declare_completion()
 	world << "<br><br><br><H1>A round of [mode.name] has ended!</H1>"
+	roll_titles()
 	for(var/mob/Player in player_list)
 		if(Player.mind && !isnewplayer(Player))
 			if(Player.stat != DEAD)

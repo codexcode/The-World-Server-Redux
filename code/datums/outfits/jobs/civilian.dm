@@ -101,7 +101,7 @@
 
 /decl/hierarchy/outfit/job/heads/judge
 	name = OUTFIT_JOB_NAME("Judge")
-	l_ear = /obj/item/device/radio/headset/ia
+	l_ear = /obj/item/device/radio/headset/headset_judge
 	uniform = /obj/item/clothing/under/suit_jacket/charcoal
 	head = /obj/item/clothing/head/powdered_wig
 	suit = /obj/item/clothing/suit/judgerobe
@@ -118,7 +118,7 @@
 
 /decl/hierarchy/outfit/job/civilian/defense/defense
 	name = OUTFIT_JOB_NAME("Defense Attorney")
-	l_ear = /obj/item/device/radio/headset/ia
+	l_ear = /obj/item/device/radio/headset/headset_legal
 	uniform = /obj/item/clothing/under/lawyer/blue
 	suit = /obj/item/clothing/suit/storage/toggle/lawyer/bluejacket
 	shoes = /obj/item/clothing/shoes/black
@@ -137,3 +137,19 @@
 	l_hand = /obj/item/weapon/clipboard
 	id_type = /obj/item/weapon/card/id/security/prosecutor
 	pda_type = /obj/item/device/pda/lawyer
+
+/decl/hierarchy/outfit/job/civilian/secretary
+	name = OUTFIT_JOB_NAME("Secretary")
+	l_ear = /obj/item/device/radio/headset/headset_com
+	r_ear = /obj/item/weapon/pen
+	shoes = /obj/item/clothing/shoes/brown
+	id_type = /obj/item/weapon/card/id/civilian/secretary
+	r_hand = /obj/item/weapon/folder
+	l_hand = /obj/item/weapon/paper
+
+/decl/hierarchy/outfit/job/civilian/secretary/pre_equip(mob/living/carbon/human/H)
+	..()
+	if(H.gender == FEMALE)
+		uniform = /obj/item/clothing/under/suit_jacket/checkered/skirt
+	else
+		uniform = /obj/item/clothing/under/suit_jacket/checkered

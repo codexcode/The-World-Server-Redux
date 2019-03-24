@@ -306,6 +306,33 @@
 				if (!muzzled)
 					message = "giggles."
 					m_type = 2
+					var/use_sound
+					if(get_species() == SPECIES_HUMAN_CHILD || get_species() == SPECIES_HUMAN_TEEN)
+						if(get_gender() == FEMALE)
+							use_sound = pick(
+							'sound/voice/human/girllaugh.ogg',
+							'sound/voice/human/teengirlgiggle1.ogg',
+							'sound/voice/human/teengirlgiggle2.ogg')
+							playsound(src.loc, use_sound, 50)
+						else
+							use_sound = pick(
+							'sound/voice/human/childlaugh1.ogg')
+							playsound(src.loc, use_sound, 50, 0)
+							m_type = 2
+					else
+						if(get_gender() == FEMALE)
+							use_sound = pick(
+							'sound/voice/human/womanlaugh1.ogg',
+							'sound/voice/human/womanlaugh2.ogg',
+							'sound/voice/human/womanlaugh3.ogg')
+
+							playsound(src.loc, use_sound, 50)
+						else
+							use_sound = pick(
+							'sound/voice/human/mangiggle1.ogg',
+							'sound/voice/human/mangiggle2.ogg')
+							playsound(src.loc, use_sound, 50, 0)
+							m_type = 2
 				else
 					message = "makes a noise."
 					m_type = 2
@@ -419,6 +446,32 @@
 				if (!muzzled)
 					message = "laughs."
 					m_type = 2
+					var/use_sound
+					if(get_species() == SPECIES_HUMAN_CHILD || get_species() == SPECIES_HUMAN_TEEN)
+						if(get_gender() == FEMALE)
+							use_sound = pick(
+							'sound/voice/human/girllaugh.ogg')
+							playsound(src.loc, use_sound, 50)
+						else
+							use_sound = pick(
+							'sound/voice/human/childlaugh1.ogg')
+							playsound(src.loc, use_sound, 50, 0)
+							m_type = 2
+					else
+						if(get_gender() == FEMALE)
+							use_sound = pick(
+							'sound/voice/human/womanlaugh1.ogg',
+							'sound/voice/human/womanlaugh2.ogg',
+							'sound/voice/human/womanlaugh2.ogg')
+
+							playsound(src.loc, use_sound, 50)
+						else
+							use_sound = pick(
+							'sound/voice/human/manlaugh1.ogg',
+							'sound/voice/human/manlaugh2.ogg')
+							playsound(src.loc, use_sound, 50, 0)
+							m_type = 2
+
 				else
 					message = "makes a noise."
 					m_type = 2
@@ -689,7 +742,14 @@
 				m_type = 1
 			else
 				if(!muzzled)
-					message = "[species.scream_verb]!"
+					//message = "[species.scream_verb]!"
+					var/scream_sound = pick("Aaaaaargh!","Aaaaah!","Aaaaahhhh!","AHHHHHH!","Aaarrgh!")
+					var/scream_desc = pick("lets out a bloodcurdling scream",
+					"screams loudly",
+					"yells out in a scream",
+					"yowls",
+					"screams")
+					message = "[scream_desc], \"[scream_sound]\""
 					m_type = 2
 					if(get_gender() == FEMALE)
 						playsound(src, pick(species.female_scream_sound), 50)
@@ -798,7 +858,6 @@
 			m_type = 1
 			if (!src.restrained())
 				message = "steps rhymatically and conservatively as they move side to side."
-				playsound(src.loc, 'sound/effects/bodyfall4.ogg', 50, 1)
 				var/default_pixel_x = initial(pixel_x)
 				var/default_pixel_y = initial(pixel_y)
 				default_pixel_x = src.default_pixel_x
@@ -822,8 +881,19 @@
 			src << "<font color='blue'>Unusable emote '[act]'. Say *help for a list.</font>"
 
 	if (message)
-		custom_emote(m_type,message)
 
+	// Handles spam prevention. Take that!
+	//If you're muted for IC chat
+		if(client)
+			client.handle_spam_prevention(MUTE_IC)
+
+			if((client.prefs.muted & MUTE_IC) || say_disabled)
+				src << "<span class='warning'>You cannot speak in IC (Muted).</span>"
+				return
+
+				dialogue_log += "<b>([time_stamp()])</b> (<b>[src]/[src.client]</b>) <u>EMOTE:</u> - <span style=\"color:purple\">[message]</span>"
+				round_text_log += "<b>([time_stamp()])</b> (<b>[src]</b>) <u>EMOTE:</u> - <span style=\"color:purple\">[message]</span>"
+		custom_emote(m_type,message)
 /mob/living/carbon/human/verb/pose()
 	set name = "Set Pose"
 	set desc = "Sets a description which will be shown when someone examines you."

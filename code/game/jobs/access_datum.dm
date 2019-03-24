@@ -310,7 +310,12 @@
 	desc = "Cargo Office"
 	region = ACCESS_REGION_SUPPLY
 
-// /var/const/free_access_id = 51
+/var/const/access_warrant = 51
+/datum/access/warrant
+	id = access_warrant
+	desc = "Warrants"
+	region = ACCESS_REGION_SECURITY
+
 
 // /var/const/free_access_id = 52
 
@@ -397,6 +402,13 @@
 	id = access_medical_equip
 	desc = "Medical Equipment"
 	region = ACCESS_REGION_MEDBAY
+
+
+/var/const/access_bodyguard = 67
+/datum/access/bodyguard
+	id = access_bodyguard
+	desc = "City Hall Guard"
+	region = ACCESS_REGION_COMMAND
 
 
 

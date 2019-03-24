@@ -46,7 +46,7 @@ var/list/gamemode_cache = list()
 	var/continous_rounds = 0			// Gamemodes which end instantly will instead keep on going until the round ends by escape shuttle or nuke.
 	var/allow_Metadata = 0				// Metadata is supported.
 	var/popup_admin_pm = 0				//adminPMs to non-admins show in a pop-up 'reply' window when set to 1.
-	var/fps = 20
+	var/fps = 30
 	var/tick_limit_mc_init = TICK_LIMIT_MC_INIT_DEFAULT	//SSinitialization throttling
 	var/Tickcomp = 0
 	var/socket_talk	= 0					// use socket_talk to communicate with other processes
@@ -190,6 +190,8 @@ var/list/gamemode_cache = list()
 	var/use_lib_nudge = 0 //Use the C library nudge instead of the python nudge.
 	var/use_overmap = 0
 
+	var/use_discord_pins = 1
+
 	// Event settings
 	var/expected_round_length = 3 * 60 * 60 * 10 // 3 hours
 	// If the first delay has a custom start time
@@ -209,6 +211,8 @@ var/list/gamemode_cache = list()
 	var/looc_allowed = 1
 	var/dooc_allowed = 1
 	var/dsay_allowed = 1
+
+	var/emojis = 0
 
 	var/starlight = 0	// Whether space turfs have ambient light or not
 
@@ -453,6 +457,9 @@ var/list/gamemode_cache = list()
 					config.ooc_allowed = 0
 					config.looc_allowed = 0
 
+				if("emojis")
+					config.emojis = 1
+
 				if ("disable_entry")
 					config.enter_allowed = 0
 
@@ -625,6 +632,9 @@ var/list/gamemode_cache = list()
 
 				if("uneducated_mice")
 					config.uneducated_mice = 1
+
+				if("use_discord_pins")
+					config.use_discord_pins = 1
 
 				if("allow_chat_markup")
 					config.allow_chat_markup = 1

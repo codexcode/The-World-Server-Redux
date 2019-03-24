@@ -14,6 +14,7 @@ var/list/department_radio_keys = list(
 	  ":x" = "Raider",		".x" = "Raider",
 	  ":u" = "Supply",		".u" = "Supply",
 	  ":v" = "Service",		".v" = "Service",
+	  ":o" = "Legal",		".o" = "Legal",
 	  ":p" = "AI Private",	".p" = "AI Private",
 	  ":y" = "Explorer",	".y" = "Explorer",
 
@@ -31,6 +32,7 @@ var/list/department_radio_keys = list(
 	  ":X" = "Raider",		".X" = "Raider",
 	  ":U" = "Supply",		".U" = "Supply",
 	  ":V" = "Service",		".V" = "Service",
+	  ":O" = "Legal",		".O" = "Legal",
 	  ":P" = "AI Private",	".P" = "AI Private",
 	  ":Y" = "Explorer",	".Y" = "Explorer",
 
@@ -129,7 +131,7 @@ proc/get_radio_key_from_channel(var/channel)
 	if(ending=="!")
 		return pick("exclaims","shouts","yells")
 	if(ending=="?")
-		return "asks"
+		return pick("asks", "enquires", "questions")
 	return verb
 
 
@@ -379,6 +381,10 @@ proc/get_radio_key_from_channel(var/channel)
 			qdel(I)
 
 	//Log the message to file
+	if(ishuman(src))
+		dialogue_log += "<b>([time_stamp()])</b> (<b>[src]</b>) <u>SAY:</u> - <span style=\"color:green\">[message]</span>"
+		round_text_log += "<b>([time_stamp()])</b> (<b>[src]/[src.client]</b>) <u>SAY:</u> - <span style=\"color:green\">[message]</span>"
+
 	if(whispering)
 		log_whisper(message,src)
 	else
