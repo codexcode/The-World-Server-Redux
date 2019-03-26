@@ -1,26 +1,3 @@
-//Don't forget to add websites here.
-
-var/list/available_website_list = list(
-	/datum/website/error,
-	/datum/website,
-	/datum/website/ntoogle)
-
-var/list/datum/website/website_list = list()
-
-var/blank_website
-var/ntoogle_website
-var/error_website
-
-
-proc/load_all_websites()
-	new /datum/website(blank_website)
-	new /datum/website/error(error_website)
-	new /datum/website/ntoogle(ntoogle_website)
-
-	for(var/W in available_website_list)
-		website_list.Add(new W)
-
-
 //Actual base website definition - a Blank page.
 
 /datum/website
