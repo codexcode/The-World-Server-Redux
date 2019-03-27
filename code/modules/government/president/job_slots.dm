@@ -11,30 +11,59 @@
 	var/president_can_set_wage = TRUE
 	var/president_economic_modifier // The economic modifier of the job. If set, this overrides the default wage.
 
+	//save related!
+	var/sav_pres_positions = 3
+	var/sav_president_economic_modifier = 1
+	var/sav_pres_set_minimum_age = 5
+	var/sav_type
+	var/path = "data/persistence/jobs"
 
-var/savefile/pres_jobs = new("data/persistence/jobs.sav")
+	var/savefile/pres_jobs
 
+/datum/job/New()
+	..()
+	get_save_path()
 
+/datum/job/proc/get_save_path()
+	if(!fexists("[path]/[title].sav"))
+		pres_jobs = new("[path]/[title].sav")
+		log_admin("Save for ''[title]'' CREATED.")
+		message_admins("Save for ''[title]'' CREATED.", 1)
+	else
+		pres_jobs = new("[path]/[title].sav")
+		Write(pres_jobs)
+	return
 
 /datum/job/Write(savefile/pres_jobs)
-   //store coordinates
-   pres_jobs << pres_positions
-   pres_jobs << president_economic_modifier
-   pres_jobs << pres_set_minimum_age
-   //store variables
-   ..()
+	get_save_path()
+	//store coordinates
+	pres_jobs["positions"] << sav_pres_positions
+	pres_jobs["eco_modifier"] << sav_president_economic_modifier
+	pres_jobs["minimum_age"] << sav_pres_set_minimum_age
+	log_admin("Persistent job ''[title]''  successfully saved.")
+	message_admins("Persistent job ''[title]''  successfully saved.", 1)
+	//store variables
+	..()
+
 /datum/job/Read(savefile/pres_jobs)
-   var {sav_pres_positions; sav_president_economic_modifier; sav_pres_set_minimum_age}
-   //load coordinates
-   pres_jobs >> sav_pres_positions
-   pres_jobs >> sav_president_economic_modifier
-   pres_jobs >> sav_pres_set_minimum_age
-   //restore variables
-   ..()
-   //restore coordinates
-   pres_set_minimum_age = sav_pres_set_minimum_age
-   president_economic_modifier = sav_president_economic_modifier
-   pres_set_minimum_age = sav_pres_set_minimum_age
+//	get_save_path()
+	if(!fexists("[path]/[title].sav"))
+		log_admin("Save for ''[title]'' does not exist.")
+		message_admins("Save for ''[title]'' does not exist.", 1)
+		Write(pres_jobs)
+		return 0
+
+   	//load
+	pres_jobs["positions"] >> sav_pres_positions
+	pres_jobs["eco_modifier"] >> sav_president_economic_modifier
+	pres_jobs["minimum_age"] >> sav_pres_set_minimum_age
+	//restore variables
+	..()
+	//restore
+
+	pres_set_minimum_age = sav_pres_set_minimum_age
+	president_economic_modifier = sav_president_economic_modifier
+	pres_set_minimum_age = sav_pres_set_minimum_age
 
 /datum/admins/proc/save_jobs()
 	set name = "Save Jobs"
@@ -43,7 +72,7 @@ var/savefile/pres_jobs = new("data/persistence/jobs.sav")
 	for(var/datum/job/P in job_master.occupations)
 		save_persistent_president_jobs(P)
 
-	return
+		return
 
 /datum/admins/proc/load_jobs()
 	set name = "Load Jobs"
@@ -52,4 +81,4 @@ var/savefile/pres_jobs = new("data/persistence/jobs.sav")
 	for(var/datum/job/P in job_master.occupations)
 		load_persistent_president_jobs(P)
 
-	return
+		return
