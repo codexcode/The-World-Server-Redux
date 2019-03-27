@@ -6,19 +6,19 @@
 	requires_ntnet = 1
 	available_on_ntnet = 0					// ... but we want it to be available for download.
 	usage_flags = PROGRAM_ALL
- 	required_access = access_president
-  nanomodule_path = /datum/nano_module/program/president/
-  
-  
+	required_access = access_president
+	nanomodule_path = /datum/nano_module/program/president/
+
+
 /datum/nano_module/program/president/
 	name = "Presidential Portal Assistant"
-  
 
+/*
 /datum/nano_module/program/president/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = 1, var/datum/topic_state/state = default_state)
 	var/list/data = list()
 	if(program)
 		data = program.get_header_data()
-  
-  
-  
-  
+
+*/
+
+

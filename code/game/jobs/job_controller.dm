@@ -12,7 +12,6 @@ var/global/datum/controller/occupations/job_master
 		//Debug info
 	var/list/job_debug = list()
 
-
 	proc/SetupOccupations(var/faction = "City")
 		occupations = list()
 		//var/list/all_jobs = typesof(/datum/job)
@@ -27,6 +26,9 @@ var/global/datum/controller/occupations/job_master
 			occupations += job
 		sortTim(occupations, /proc/cmp_job_datums)
 
+		//Job Persistence.
+		for(var/datum/job/P in occupations)
+			load_persistent_president_jobs(P)
 
 		return 1
 
