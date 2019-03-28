@@ -25,13 +25,8 @@
 	get_save_path()
 
 /datum/job/proc/get_save_path()
-	if(!fexists("[path]/[title].sav"))
-		pres_jobs = new("[path]/[title].sav")
-		log_admin("Save for ''[title]'' CREATED.")
-		message_admins("Save for ''[title]'' CREATED.", 1)
-	else
-		pres_jobs = new("[path]/[title].sav")
-		Write(pres_jobs)
+
+	pres_jobs = new("[path]/[title].sav")
 	return
 
 /datum/job/Write(savefile/pres_jobs)
@@ -46,12 +41,7 @@
 	..()
 
 /datum/job/Read(savefile/pres_jobs)
-//	get_save_path()
-	if(!fexists("[path]/[title].sav"))
-		log_admin("Save for ''[title]'' does not exist.")
-		message_admins("Save for ''[title]'' does not exist.", 1)
-		Write(pres_jobs)
-		return 0
+	get_save_path()
 
    	//load
 	pres_jobs["positions"] >> sav_pres_positions
@@ -65,8 +55,8 @@
 	president_economic_modifier = sav_president_economic_modifier
 	pres_set_minimum_age = sav_pres_set_minimum_age
 
-/datum/admins/proc/save_jobs()
-	set name = "Save Jobs"
+/datum/admins/proc/load_jobs()
+	set name = "Load Jobs"
 	set category = "Persistence"
 
 	for(var/datum/job/P in job_master.occupations)
@@ -74,8 +64,8 @@
 
 		return
 
-/datum/admins/proc/load_jobs()
-	set name = "Load Jobs"
+/datum/admins/proc/save_jobs()
+	set name = "Save Jobs"
 	set category = "Persistence"
 
 	for(var/datum/job/P in job_master.occupations)
