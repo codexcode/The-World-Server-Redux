@@ -45,6 +45,7 @@
 	var/const/STATUS_DISPLAY_MESSAGE = 2
 	var/const/STATUS_DISPLAY_ALERT = 3
 	var/const/STATUS_DISPLAY_TIME = 4
+	var/const/STATUS_DISPLAY_IMAGE = 5
 	var/const/STATUS_DISPLAY_CUSTOM = 99
 
 /obj/machinery/status_display/Destroy()
@@ -134,12 +135,15 @@
 			update_display(line1, line2)
 			return 1
 		if(STATUS_DISPLAY_ALERT)
-			set_picture(picture_state)
+			display_alert()
 			return 1
 		if(STATUS_DISPLAY_TIME)
 			message1 = "TIME"
 			message2 = stationtime2text()
 			update_display(message1, message2)
+			return 1
+		if(STATUS_DISPLAY_IMAGE)
+			set_picture(picture_state)
 			return 1
 	return 0
 
@@ -169,12 +173,14 @@
 		picture_state = state
 		picture = image('icons/obj/status_display.dmi', icon_state=picture_state)
 	overlays |= picture
+	set_light(1.5, 1, COLOR_WHITE)
 
 /obj/machinery/status_display/proc/update_display(line1, line2)
 	var/new_text = {"<div style="font-size:[FONT_SIZE];color:[FONT_COLOR];font:'[FONT_STYLE]';text-align:center;" valign="top">[line1]<br>[line2]</div>"}
 	if(maptext != new_text)
 		maptext = new_text
-
+	set_light(1.5, 1, COLOR_WHITE)
+	
 /obj/machinery/status_display/proc/get_shuttle_timer_arrival()
 	if(!emergency_shuttle)
 		return "Error"
@@ -202,12 +208,23 @@
 			return "Late"
 		return "[add_zero(num2text((timeleft / 60) % 60),2)]:[add_zero(num2text(timeleft % 60), 2)]"
 	return ""
+	
+/obj/machinery/status_display/proc/display_alert()
+	remove_display()
+
+	var/decl/security_state/security_state = decls_repository.get_decl(using_map.security_state)
+	var/decl/security_level/sl = security_state.current_security_level
+
+	var/image/alert = image(sl.icon, sl.overlay_status_display)
+	set_light(l_range = sl.light_range, l_power = sl.light_power, l_color = sl.light_color_status_display)
+	overlays |= alert
 
 /obj/machinery/status_display/proc/remove_display()
 	if(overlays.len)
 		overlays.Cut()
 	if(maptext)
 		maptext = ""
+	set_light(0)
 
 /obj/machinery/status_display/receive_signal(datum/signal/signal)
 	switch(signal.data["command"])
@@ -227,6 +244,10 @@
 
 		if("time")
 			mode = STATUS_DISPLAY_TIME
+			
+		if("image")
+			mode = STATUS_DISPLAY_IMAGE
+			set_picture(signal.data["picture_state"])
 	update()
 
 #undef CHARS_PER_LINE
