@@ -29,6 +29,9 @@
 	if(hacked_apcs)
 		for(var/obj/machinery/power/apc/A in hacked_apcs)
 			A.hacker = null
+	var/decl/security_state/security_state = decls_repository.get_decl(using_map.security_state)
+	if(security_state.current_security_level == security_state.severe_security_level)
+		security_state.decrease_security_level(TRUE)
 	hacked_apcs = null
 	// Reset our verbs
 	src.verbs = null
