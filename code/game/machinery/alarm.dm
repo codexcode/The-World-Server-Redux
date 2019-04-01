@@ -296,33 +296,37 @@
 		return 1
 	return 0
 
-/obj/machinery/alarm/update_icon()
-	if(panel_open)
-		icon_state = "alarmx"
+/obj/machinery/firealarm/update_icon()
+	overlays.Cut()
+
+	if(wiresexposed)
+		switch(buildstage)
+			if(2)
+				icon_state="fire_b2"
+			if(1)
+				icon_state="fire_b1"
+			if(0)
+				icon_state="fire_b0"
 		set_light(0)
 		return
-	if((stat & (NOPOWER|BROKEN)) || shorted)
-		icon_state = "alarmp"
+
+	if(stat & BROKEN)
+		icon_state = "firex"
 		set_light(0)
-		return
+	else if(stat & NOPOWER)
+		icon_state = "firep"
+		set_light(0)
+	else
+		if(!src.detecting)
+			icon_state = "fire1"
+			set_light(l_range = 4, l_power = 2, l_color = COLOR_RED)
+		else if(z in using_map.contact_levels)
+			icon_state = "fire0"
+			var/decl/security_state/security_state = decls_repository.get_decl(GLOB.using_map.security_state)
+			var/decl/security_level/sl = security_state.current_security_level
 
-	var/icon_level = danger_level
-	if(alarm_area.atmosalm)
-		icon_level = max(icon_level, 1)	//if there's an atmos alarm but everything is okay locally, no need to go past yellow
-
-	var/new_color = null
-	switch(icon_level)
-		if(0)
-			icon_state = "alarm0"
-			new_color = "#03A728"
-		if(1)
-			icon_state = "alarm2" //yes, alarm2 is yellow alarm
-			new_color = "#EC8B2F"
-		if(2)
-			icon_state = "alarm1"
-			new_color = "#DA0205"
-
-	set_light(l_range = 2, l_power = 0.5, l_color = new_color)
+			set_light(sl.light_range, sl.light_power, sl.light_color_alarm)
+			src.overlays += image(sl.icon, sl.overlay_alarm)
 
 /obj/machinery/alarm/receive_signal(datum/signal/signal)
 	if(stat & (NOPOWER|BROKEN))
@@ -823,9 +827,16 @@ FIRE ALARM
 	alarms_hidden = TRUE
 
 /obj/machinery/firealarm/update_icon()
-	cut_overlays()
+	overlays.Cut()
 
-	if(panel_open)
+	if(wiresexposed)
+		switch(buildstage)
+			if(2)
+				icon_state="fire_b2"
+			if(1)
+				icon_state="fire_b1"
+			if(0)
+				icon_state="fire_b0"
 		set_light(0)
 		return
 
@@ -836,22 +847,21 @@ FIRE ALARM
 		icon_state = "firep"
 		set_light(0)
 	else
-		if(!detecting)
+		if(!src.detecting)
 			icon_state = "fire1"
-			set_light(l_range = 4, l_power = 2, l_color = "#ff0000")
-		else
+			set_light(l_range = 4, l_power = 2, l_color = COLOR_RED)
+		else if(z in using_map.contact_levels)
 			icon_state = "fire0"
-			switch(seclevel)
-				if("green")	set_light(l_range = 2, l_power = 0.5, l_color = "#00ff00")
-				if("blue")	set_light(l_range = 2, l_power = 0.5, l_color = "#1024A9")
-				if("red")	set_light(l_range = 4, l_power = 2, l_color = "#ff0000")
-				if("delta")	set_light(l_range = 4, l_power = 2, l_color = "#FF6633")
-		add_overlay("overlay_[seclevel]")
+			var/decl/security_state/security_state = decls_repository.get_decl(GLOB.using_map.security_state)
+			var/decl/security_level/sl = security_state.current_security_level
+
+			set_light(sl.light_range, sl.light_power, sl.light_color_alarm)
+			src.overlays += image(sl.icon, sl.overlay_alarm)
 
 /obj/machinery/firealarm/fire_act(datum/gas_mixture/air, temperature, volume)
-	if(detecting)
-		if(temperature > T0C + 200)
-			alarm()			// added check of detector status here
+	if(src.detecting)
+		if(temperature > T0C+200)
+			src.alarm()			// added check of detector status here
 	return
 
 /obj/machinery/firealarm/attack_ai(mob/user as mob)
@@ -926,7 +936,7 @@ FIRE ALARM
 			d2 = text("<A href='?src=\ref[];time=1'>Initiate Time Lock</A>", src)
 		var/second = round(time) % 60
 		var/minute = (round(time) - second) / 60
-		var/dat = "<HTML><HEAD></HEAD><BODY><TT><B>Fire alarm</B> [d1]\n<HR>The current alert level is: <b>[get_security_level()]</b><br><br>\nTimer System: [d2]<BR>\nTime Left: [(minute ? "[minute]:" : null)][second] <A href='?src=\ref[src];tp=-30'>-</A> <A href='?src=\ref[src];tp=-1'>-</A> <A href='?src=\ref[src];tp=1'>+</A> <A href='?src=\ref[src];tp=30'>+</A>\n</TT></BODY></HTML>"
+		var/dat = "<HTML><HEAD></HEAD><BODY><TT><B>Fire alarm</B> [d1]\n<HR>The current security level is <b>[security_state.current_security_level.name]</b><br><br>\nTimer System: [d2]<BR>\nTime Left: [(minute ? "[minute]:" : null)][second] <A href='?src=\ref[src];tp=-30'>-</A> <A href='?src=\ref[src];tp=-1'>-</A> <A href='?src=\ref[src];tp=1'>+</A> <A href='?src=\ref[src];tp=30'>+</A>\n</TT></BODY></HTML>"
 		user << browse(dat, "window=firealarm")
 		onclose(user, "firealarm")
 	else
@@ -941,7 +951,7 @@ FIRE ALARM
 			d2 = text("<A href='?src=\ref[];time=1'>[]</A>", src, stars("Initiate Time Lock"))
 		var/second = round(time) % 60
 		var/minute = (round(time) - second) / 60
-		var/dat = "<HTML><HEAD></HEAD><BODY><TT><B>[stars("Fire alarm")]</B> [d1]\n<HR><b>The current alert level is: [stars(get_security_level())]</b><br><br>\nTimer System: [d2]<BR>\nTime Left: [(minute ? text("[]:", minute) : null)][second] <A href='?src=\ref[src];tp=-30'>-</A> <A href='?src=\ref[src];tp=-1'>-</A> <A href='?src=\ref[src];tp=1'>+</A> <A href='?src=\ref[src];tp=30'>+</A>\n</TT></BODY></HTML>"
+		var/dat = "<HTML><HEAD></HEAD><BODY><TT><B>[stars("Fire alarm")]</B> [d1]\n<HR>The current security level is <b>[security_state.current_security_level.name]</b><br><br>\nTimer System: [d2]<BR>\nTime Left: [(minute ? text("[]:", minute) : null)][second] <A href='?src=\ref[src];tp=-30'>-</A> <A href='?src=\ref[src];tp=-1'>-</A> <A href='?src=\ref[src];tp=1'>+</A> <A href='?src=\ref[src];tp=30'>+</A>\n</TT></BODY></HTML>"
 		user << browse(dat, "window=firealarm")
 		onclose(user, "firealarm")
 	return
@@ -993,15 +1003,10 @@ FIRE ALARM
 	//playsound(src.loc, 'sound/ambience/signal.ogg', 75, 0)
 	return
 
-/obj/machinery/firealarm/proc/set_security_level(var/newlevel)
-	if(seclevel != newlevel)
-		seclevel = newlevel
-		update_icon()
-
-/obj/machinery/firealarm/initialize()
+/obj/machinery/firealarm/Initialize()
 	. = ..()
-	if(z in using_map.contact_levels)
-		set_security_level(security_level? get_security_level() : "green")
+	if(z in GLOB.using_map.contact_levels)
+		update_icon()
 
 /*
 FIRE ALARM CIRCUIT
