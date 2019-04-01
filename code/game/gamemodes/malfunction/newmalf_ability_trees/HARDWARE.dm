@@ -90,7 +90,9 @@
 	user << "***** STATION SELF-DESTRUCT SEQUENCE INITIATED *****"
 	user << "Self-destructing in 2 minutes. Use this command again to abort."
 	user.bombing_station = 1
-	set_security_level("delta")
+
+	var/decl/security_state/security_state = decls_repository.get_decl(using_map.security_state)
+	security_state.set_security_level(security_state.severe_security_level, TRUE)
 	radio.autosay("Self destruct sequence has been activated. Self-destructing in 120 seconds.", "Self-Destruct Control")
 
 	var/timer = 120
