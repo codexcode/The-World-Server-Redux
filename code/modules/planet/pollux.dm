@@ -5,9 +5,9 @@ var/datum/planet/sif/planet_sif = null
 
 /datum/planet/sif
 	name = "Pollux"
-	desc = "Pollux is a terrestrial planet in the Vir system. It is somewhat earth-like, in that it has oceans, a \
+	desc = "Pollux is a terrestrial planet in the Vetra system. It is somewhat earth-like, in that it has oceans, a \
 	breathable atmosphere, a magnetic field, weather, and similar gravity to Earth. It is currently the capital planet of Vetra. \
-	Its center of government is the equatorial city and site of first settlement, Geminus Cit." // Ripped straight from the wiki.
+	Its center of government is the equatorial city and site of first settlement, Geminus Ciy." // Ripped straight from the wiki.
 	current_time = new /datum/time/sif() // 32 hour clocks are nice.
 //	expected_z_levels = list(1) // To be changed when real map is finished.
 	planetary_wall_type = /turf/unsimulated/wall/planetary/sif
@@ -210,7 +210,8 @@ var/datum/planet/sif/planet_sif = null
 		"It's starting to snow.",
 		"The air feels much colder as snowflakes fall from above."
 	)
-
+//	outdoor_sounds_type = /datum/looping_sound/outside_snow
+//	indoor_sounds_type = /datum/looping_sound/inside_snow
 /datum/weather/sif/snow/process_effects()
 	..()
 	for(var/turf/simulated/floor/outdoors/snow/S in SSplanets.new_outdoor_turfs) //This didn't make any sense before SSplanets, either
@@ -239,7 +240,8 @@ var/datum/planet/sif/planet_sif = null
 		"Strong winds howl around you as a blizzard appears.",
 		"It starts snowing heavily, and it feels extremly cold now."
 	)
-
+//	outdoor_sounds_type = /datum/looping_sound/outside_blizzard
+//	indoor_sounds_type = /datum/looping_sound/inside_blizzard
 /datum/weather/sif/blizzard/process_effects()
 	..()
 	for(var/turf/simulated/floor/outdoors/snow/S in SSplanets.new_outdoor_turfs) //This didn't make any sense before SSplanets, either
@@ -402,6 +404,9 @@ var/datum/planet/sif/planet_sif = null
 						to_chat(H, "<span class='notice'>Hail patters gently onto your umbrella.</span>")
 					continue
 */
+// These never happen naturally, and are for adminbuse.
+
+// A culty weather.
 /datum/weather/sif/blood_moon
 	name = "blood moon"
 	light_modifier = 0.5
@@ -414,6 +419,8 @@ var/datum/planet/sif/planet_sif = null
 	transition_messages = list(
 		"The sky turns blood red!"
 	)
+	outdoor_sounds_type = /datum/looping_sound/wind
+	indoor_sounds_type = /datum/looping_sound/wind/indoors
 
 /datum/weather/sif/acid_rain
 	name = "acid rain"
@@ -476,3 +483,101 @@ var/datum/planet/sif/planet_sif = null
 		"The air begins to grow warm in a strange, inconsistent way.",
 		"The clouds begin to turn green, something seems terribly wrong."
 	)
+
+// Ash and embers fall forever, such as from a volcano or something.
+/datum/weather/sif/emberfall
+	name = "emberfall"
+	icon_state = "ashfall_light"
+	light_modifier = 0.7
+	light_color = "#880000"
+	temp_high = 293.15	// 20c
+	temp_low = 283.15	// 10c
+	flight_failure_modifier = 20
+	transition_chances = list(
+		WEATHER_EMBERFALL = 100
+		)
+	observed_message = "Soot, ash, and embers float down from above."
+	transition_messages = list(
+		"Gentle embers waft down around you like grotesque snow."
+	)
+//	outdoor_sounds_type = /datum/looping_sound/wind
+//	indoor_sounds_type = /datum/looping_sound/wind/indoors
+
+// Like the above but a lot more harmful.
+/datum/weather/sif/ash_storm
+	name = "ash storm"
+	icon_state = "ashfall_heavy"
+	light_modifier = 0.1
+	light_color = "#FF0000"
+	temp_high = 323.15	// 50c
+	temp_low = 313.15	// 40c
+	flight_failure_modifier = 50
+	transition_chances = list(
+		WEATHER_ASH_STORM = 100
+		)
+	observed_message = "All that can be seen is black smoldering ash."
+	transition_messages = list(
+		"Smoldering clouds of scorching ash billow down around you!"
+	)
+	// Lets recycle.
+//	outdoor_sounds_type = /datum/looping_sound/outside_blizzard
+//	indoor_sounds_type = /datum/looping_sound/inside_blizzard
+
+/datum/weather/sif/ash_storm/process_effects()
+	..()
+	for(var/thing in living_mob_list)
+		var/mob/living/L = thing
+		if(L.z in holder.our_planet.expected_z_levels)
+			var/turf/T = get_turf(L)
+			if(!T.outdoors)
+				continue // They're indoors, so no need to burn them with ash.
+
+			L.inflict_heat_damage(rand(1, 3))
+
+
+// Totally radical.
+/datum/weather/sif/fallout
+	name = "fallout"
+	icon_state = "fallout"
+	light_modifier = 0.7
+	light_color = "#008800"
+	flight_failure_modifier = 30
+	transition_chances = list(
+		WEATHER_FALLOUT = 100
+		)
+	observed_message = "Radioactive soot and ash rains down from the heavens."
+	transition_messages = list(
+		"Radioactive soot and ash start to float down around you, contaminating whatever they touch."
+	)
+//	outdoor_sounds_type = /datum/looping_sound/wind
+//	indoor_sounds_type = /datum/looping_sound/wind/indoors
+
+	var/direct_rad_low = RAD_LEVEL_LOW
+	var/direct_rad_high = RAD_LEVEL_MODERATE
+
+	var/fallout_rad_low = RAD_LEVEL_HIGH
+	var/fallout_rad_high = RAD_LEVEL_VERY_HIGH
+
+/datum/weather/sif/fallout/process_effects()
+	..()
+	for(var/thing in living_mob_list)
+		var/mob/living/L = thing
+		if(L.z in holder.our_planet.expected_z_levels)
+			irradiate_nearby_turf(L)
+			var/turf/T = get_turf(L)
+			if(!T.outdoors)
+				continue // They're indoors, so no need to irradiate them with fallout.
+
+			L.rad_act(rand(direct_rad_low, direct_rad_high))
+
+// This makes random tiles near people radioactive for awhile.
+// Tiles far away from people are left alone, for performance.
+/datum/weather/sif/fallout/proc/irradiate_nearby_turf(mob/living/L)
+	if(!istype(L))
+		return
+	var/list/turfs = RANGE_TURFS(world.view, L)
+	var/turf/T = pick(turfs) // We get one try per tick.
+	if(!istype(T))
+		return
+	if(T.outdoors)
+		radiation_repository.radiate(T, rand(fallout_rad_low, fallout_rad_high))

@@ -230,3 +230,4 @@
 
 	var/attack_icon //Icon to use when attacking w/o anything in-hand
 	var/attack_icon_state //State for above
+	var/registered_z

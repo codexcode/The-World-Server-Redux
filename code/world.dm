@@ -705,4 +705,17 @@ proc/establish_old_db_connection()
 	else
 		return 1
 
+// Things to do when a new z-level was just made.
+/world/proc/max_z_changed()
+	if(!islist(players_by_zlevel))
+		players_by_zlevel = new /list(world.maxz, 0)
+	while(players_by_zlevel.len < world.maxz)
+		players_by_zlevel.len++
+		players_by_zlevel[players_by_zlevel.len] = list()
+
+// Call this to make a new blank z-level, don't modify maxz directly.
+/world/proc/increment_max_z()
+	maxz++
+	max_z_changed()
+
 #undef FAILED_DB_CONNECTION_CUTOFF

@@ -282,6 +282,11 @@ var/global/list/##LIST_NAME = list();\
 #define MATRIX_Vulp_Colorblind 	list(0.50,	0.40,	0.10,	0.50,	0.40,	0.10,	0,		0.20,	0.80)
 #define MATRIX_Taj_Colorblind 	list(0.40,	0.20,	0.40,	0.40,	0.60,	0,		0.20,	0.20,	0.60)
 
+// Diagonal movement
+#define FIRST_DIAG_STEP 1
+#define SECOND_DIAG_STEP 2
+
+
 #define NTNET_SOFTWAREDOWNLOAD 1 	// Downloads of software from NTNet
 #define NTNET_PEERTOPEER 2			// P2P transfers of files between devices
 #define NTNET_COMMUNICATION 3		// Communication (messaging)
@@ -307,3 +312,9 @@ var/global/list/##LIST_NAME = list();\
 // Caps for NTNet logging. Less than 10 would make logging useless anyway, more than 500 may make the log browser too laggy. Defaults to 100 unless user changes it.
 #define MAX_NTNET_LOGS 500
 #define MIN_NTNET_LOGS 10
+
+// Radiation 'levels'. Used for the geiger counter, for visuals and sound. They are in different files so this goes here.
+#define RAD_LEVEL_LOW 0.01 // Around the level at which radiation starts to become harmful
+#define RAD_LEVEL_MODERATE 10
+#define RAD_LEVEL_HIGH 25
+#define RAD_LEVEL_VERY_HIGH 50

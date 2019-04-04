@@ -171,11 +171,11 @@
 		if(.)
 			Moved(A, direct)
 	return
-
+/*
 // Called on a successful Move().
 /atom/movable/proc/Moved(atom/oldloc)
 	return
-
+*/
 /client/proc/Move_object(direct)
 	if(mob && mob.control_object)
 		if(mob.control_object.density)

@@ -206,7 +206,7 @@ var/list/sacrificed = list()
 			if(cultists.len >= 9)
 				if(!narsie_cometh)//so we don't initiate Hell more than one time.
 					world << "<font size='15' color='red'><b>THE VEIL HAS BEEN SHATTERED!</b></font>"
-					world << sound('sound/effects/wind/wind_5_1.ogg')
+					world << sound('sound/effects/weather/wind/wind_5_1.ogg')
 
 					SetUniversalState(/datum/universal_state/hell)
 					narsie_cometh = 1
@@ -374,7 +374,7 @@ var/list/sacrificed = list()
 			sleep(10 SECONDS)
 
 			if(corpse_to_raise.client)
-				
+
 				var/datum/gender/TU = gender_datums[corpse_to_raise.get_visible_gender()]
 				var/datum/gender/TT = gender_datums[body_to_sacrifice.get_visible_gender()]
 

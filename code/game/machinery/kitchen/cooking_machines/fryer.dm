@@ -15,7 +15,7 @@
 	return ..()
 
 /obj/machinery/cooker/fryer/Destroy()
-	qdel(fry_loop)
+	QDEL_NULL(fry_loop)
 	return ..()
 
 /obj/machinery/cooker/fryer/set_cooking(new_setting)
