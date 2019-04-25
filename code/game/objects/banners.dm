@@ -2,7 +2,7 @@
 	name = "banner"
 	icon = 'icons/obj/items.dmi'
 	icon_state = "banner"
-	desc = "A banner that's invisible because it shouldn't exist."
+	desc = "A banner that's invisible because it shouldn't exist. You should probably ahelp this."
 
 /obj/item/weapon/banner/red
 	name = "red banner"

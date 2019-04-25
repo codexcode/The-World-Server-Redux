@@ -125,7 +125,7 @@ log transactions
 
 /obj/machinery/atm/attack_hand(mob/user as mob)
 	if(istype(user, /mob/living/silicon))
-		to_chat (user, "<span class='warning'>A firewall prevents you from interfacing with this device!</span>")
+		to_chat (user, "<span class='warning'>Geminus Firewall System Breach Attempted. Your activity has been logged and sent to NanoTrasen for examination. Have a nice day.</span>")
 		return
 	if(get_dist(src,user) <= 1)
 

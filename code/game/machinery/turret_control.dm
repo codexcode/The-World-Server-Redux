@@ -68,7 +68,7 @@
 
 /obj/machinery/turretid/proc/isLocked(mob/user)
 	if(ailock && issilicon(user))
-		user << "<span class='notice'>There seems to be a firewall preventing you from accessing this device.</span>"
+		user << "<span class='warning'>Geminus Firewall System Breach Attempted. Your activity has been logged and sent to NanoTrasen for examination. Have a nice day.</span>"
 		return 1
 
 	if(locked && !issilicon(user))

@@ -243,6 +243,10 @@
 	desc = "A prestigious golden medal."
 	icon_state = "gold"
 
+/obj/item/clothing/accessory/medal/gold/mayor
+	name = "medal of mayoral authority"
+	desc = "A golden medal awarded exclusively to mayors. It signifies the codified responsibilities of a mayor, and their undisputable authority in their city."
+
 /obj/item/clothing/accessory/medal/gold/captain
 	name = "medal of captaincy"
 	desc = "A golden medal awarded exclusively to those promoted to the rank of captain. It signifies the codified responsibilities of a captain, and their undisputable authority over their crew."
