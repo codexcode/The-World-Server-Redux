@@ -308,7 +308,7 @@ var/global/datum/controller/gameticker/ticker
 					to_chat(M, "The mayor is not currently in town.")
 
 
-	proc/process()
+	process()
 		if(current_state != GAME_STATE_PLAYING)
 			return 0
 
@@ -398,6 +398,19 @@ var/global/datum/controller/gameticker/ticker
 
 /datum/controller/gameticker/proc/declare_completion()
 	world << "<br><br><br><H1>A round of [mode.name] has ended!</H1>"
+
+	if(!config.canonicity) //if we're not canon in config or by gamemode, nothing will save.
+		world << "<H2>This round was not canon. It was all a dream.</H2>"
+	else
+		world << "<H2>This round was canon.</H2>"
+
+		//saves all department accounts
+		persistent_economy.save_accounts()
+
+		//saves all characters
+		for (var/mob/living/carbon/human/H in mob_list) //only humans, we don't really save AIs or robots.
+			H.save_mob_to_prefs()
+
 	roll_titles()
 	for(var/mob/Player in player_list)
 		if(Player.mind && !isnewplayer(Player))
@@ -459,7 +472,7 @@ var/global/datum/controller/gameticker/ticker
 	mode.declare_completion()//To declare normal completion.
 
 	//Ask the event manager to print round end information
-	event_manager.RoundEnd()
+	SSevents.RoundEnd()
 
 	//Print a list of antagonists to the server log
 	var/list/total_antagonists = list()

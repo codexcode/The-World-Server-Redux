@@ -1,6 +1,23 @@
 //Items labled as 'trash' for the trash bag.
 //TODO: Make this an item var or something...
 
+
+/obj/item/trash
+	var/age = 0
+
+/obj/item/trash/New(var/newloc, var/_age)
+	..(newloc)
+	if(!isnull(_age))
+		age = _age
+
+/obj/item/trash/initialize()
+	SSpersistence.track_value(src, /datum/persistent/filth/trash)
+	. = ..()
+
+/obj/item/trash/Destroy()
+	SSpersistence.forget_value(src, /datum/persistent/filth/trash)
+	. = ..()
+
 //Added by Jack Rost
 /obj/item/trash
 	icon = 'icons/obj/trash.dmi'
@@ -8,6 +25,7 @@
 	desc = "This is rubbish."
 	burn_state = 0 //Burnable
 	burntime = SHORT_BURN
+	drop_sound = 'sound/items/drop/wrapper.ogg'
 
 /obj/item/trash/raisins
 	name = "\improper 4no raisins"
@@ -52,10 +70,12 @@
 /obj/item/trash/plate
 	name = "plate"
 	icon_state = "plate"
+	drop_sound = 'sound/items/drop/glass.ogg'
 
 /obj/item/trash/snack_bowl
 	name = "snack bowl"
 	icon_state	= "snack_bowl"
+	drop_sound = 'sound/items/drop/glass.ogg'
 
 /obj/item/trash/pistachios
 	name = "pistachios pack"
@@ -68,6 +88,7 @@
 /obj/item/trash/tray
 	name = "tray"
 	icon_state = "tray"
+	drop_sound = 'sound/items/trayhit1.ogg'
 
 /obj/item/trash/candle
 	name = "candle"

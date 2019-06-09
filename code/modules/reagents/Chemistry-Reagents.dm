@@ -34,6 +34,8 @@
 	var/cup_name = null
 	var/cup_desc = null
 	var/cup_center_of_mass = null
+	var/hydration_factor = 0 // Per unit
+	var/calories_factor = 0 // Per unit
 
 	var/color = "#000000"
 	var/color_weight = 1
@@ -102,6 +104,12 @@
 	return
 
 /datum/reagent/proc/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+	var/hyd_removed = removed
+	var/cal_removed = removed
+	if(hydration_factor)
+		M.adjust_hydration(hydration_factor * hyd_removed) // For thirst
+	if(calories_factor)
+		M.adjust_calories(calories_factor * cal_removed) // For calories
 	M.bloodstr.add_reagent(id, removed)
 	return
 

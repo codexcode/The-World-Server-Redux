@@ -13,7 +13,7 @@
 	if(mind && mind.current == src)
 		spellremove(src)
 	ghostize()
-	qdel_null(plane_holder)
+	QDEL_NULL(plane_holder)
 	..()
 	return QDEL_HINT_HARDDEL_NOW
 
@@ -31,6 +31,7 @@
 	healths = null
 	throw_icon = null
 	nutrition_icon = null
+	hydration_icon = null
 	pressure = null
 	pain = null
 	item_use_icon = null
@@ -665,9 +666,10 @@
 
 	if(.)
 		if(statpanel("Status") && ticker && ticker.current_state != GAME_STATE_PREGAME)
-			stat("Station Time", stationtime2text())
-			stat("Station Date", stationdate2text())
+			stat("Current Time", stationtime2text())
+			stat("Current Date", stationdate2text())
 			stat("Round Duration", roundduration2text())
+			stat("Round Persistence:", "[config.canonicity ? "Canon" : "Non-Canon"]")
 
 		if(client.holder)
 			if(statpanel("Status"))

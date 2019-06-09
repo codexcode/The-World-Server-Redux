@@ -84,6 +84,10 @@
 
 		handle_heartbeat()
 
+		handle_nourishment()
+
+		handle_weight()
+
 		if(!client)
 			species.handle_npc(src)
 
@@ -717,6 +721,28 @@
 	return temp_change
 */
 
+/mob/living/carbon/human/proc/reset_weight()
+	if(has_modifier_of_type(/datum/modifier/trait/thin))
+		remove_a_modifier_of_type(/datum/modifier/trait/thin)
+
+
+	if(has_modifier_of_type(/datum/modifier/trait/thinner))
+		remove_a_modifier_of_type(/datum/modifier/trait/thinner)
+
+
+	if(has_modifier_of_type(/datum/modifier/trait/fat))
+		remove_a_modifier_of_type(/datum/modifier/trait/fat)
+
+
+	if(has_modifier_of_type(/datum/modifier/trait/obese))
+		remove_a_modifier_of_type(/datum/modifier/trait/obese)
+
+	update_transform()
+	return
+
+
+	//beyond this you're not getting any bigger, but you'll die.
+
 /mob/living/carbon/human/proc/stabilize_body_temperature()
 	// We produce heat naturally.
 	if (species.passive_temp_gain)
@@ -862,8 +888,9 @@
 			heal_overall_damage(1,1)
 
 	// nutrition decrease
-	if (nutrition > 0 && stat != DEAD)
-		var/nutrition_reduction = species.hunger_factor
+	var/nutrition_reduction = species.hunger_factor
+	if(nutrition > 0 && stat != DEAD)
+		adjust_nutrition(-species.hunger_factor)
 
 		for(var/datum/modifier/mod in modifiers)
 			if(!isnull(mod.metabolism_percent))
@@ -871,16 +898,36 @@
 
 		nutrition = max (0, nutrition - nutrition_reduction)
 
-	if (nutrition > 450)
-		if(overeatduration < 600) //capped so people don't take forever to unfat
-			overeatduration++
-	else
-		if(overeatduration > 1)
-			overeatduration -= 2 //doubled the unfat rate
-
-	// TODO: stomach and bloodstream organ.
 	if(!isSynthetic())
-		handle_trace_chems()
+		if(hydration > 0 && stat != DEAD)
+			adjust_hydration(-species.thirst_factor)
+
+
+
+		if(calories > 0 && stat != DEAD && client) //Calories won't burn when you're SSD or dead.
+			adjust_calories(-species.metabolic_rate / 100)
+
+		if(calories <= species.min_calories | calories >= species.max_calories)
+			if (prob(5))
+				adjustToxLoss(10)
+		//If you're too fat or skinny, you're gon die. Maybe make better symptoms later.
+			if (prob(5))
+				vomit()
+
+			if (prob(15))
+				src << "<span class='danger'>[pick("You feel dizzy and incredibly sick", "Your head is pounding", "Your entire body feels like it's dying")]!</span>"
+				Weaken(20)
+
+		if (nutrition > 450)
+			if(overeatduration < 600) //capped so people don't take forever to unfat
+				overeatduration++
+		else
+			if(overeatduration > 1)
+				overeatduration -= 2 //doubled the unfat rate
+
+		// TODO: stomach and bloodstream organ.
+
+			handle_trace_chems()
 
 	updatehealth()
 
@@ -1223,8 +1270,16 @@
 				if(350 to 450)					nutrition_icon.icon_state = "nutrition1"
 				if(250 to 350)					nutrition_icon.icon_state = "nutrition2"
 				if(150 to 250)					nutrition_icon.icon_state = "nutrition3"
-				else							nutrition_icon.icon_state = "nutrition4"
-
+				if(50 to 150)					nutrition_icon.icon_state = "nutrition4"
+				else							nutrition_icon.icon_state = "nutrition5"
+		if(hydration_icon)
+			switch(hydration)
+				if(450 to INFINITY)				hydration_icon.icon_state = "thirst0"
+				if(350 to 450)					hydration_icon.icon_state = "thirst1"
+				if(250 to 350)					hydration_icon.icon_state = "thirst2"
+				if(150 to 250)					hydration_icon.icon_state = "thirst3"
+				if(50 to 150)					hydration_icon.icon_state = "thirst4"
+				else							hydration_icon.icon_state = "thirst5"
 		if(pressure)
 			pressure.icon_state = "pressure[pressure_alert]"
 
@@ -1394,7 +1449,7 @@
 				if(air_master.current_cycle%3==1)
 					if(!(M.status_flags & GODMODE))
 						M.adjustBruteLoss(5)
-					nutrition += 10
+					adjust_nutrition(10)
 
 /mob/living/carbon/human/proc/handle_changeling()
 	if(mind && mind.changeling)
@@ -1440,6 +1495,7 @@
 	else
 		if(mind && hud_used)
 			ling_chem_display.invisibility = 101
+
 
 /mob/living/carbon/human/handle_shock()
 	..()
@@ -1527,6 +1583,20 @@
 				temp = PULSE_NONE
 
 	return temp
+
+
+/mob/living/carbon/human/proc/handle_nourishment()
+	if (nutrition <= 0)
+		if (prob(1.5))
+			src << span("warning", "Your hunger pangs are excruciating as the stomach acid sears in your stomach... you feel weak.")
+		return
+
+	if (hydration <= 0)
+		if (prob(1.5))
+			src << span("warning", "You feel dizzy and disorientated as your lack of hydration becomes impossible to ignore.")
+		return
+
+
 
 /mob/living/carbon/human/proc/handle_heartbeat()
 	if(pulse == PULSE_NONE)

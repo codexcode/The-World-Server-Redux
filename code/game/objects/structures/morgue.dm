@@ -96,11 +96,13 @@
 		if (!( A.anchored ))
 			A.forceMove(src)
 	playsound(src.loc, 'sound/items/Deconstruct.ogg', 50, 1)
+	playsound(src, 'sound/effects/roll.ogg', 5, 1)
 	qdel(src.connected)
 	src.connected = null
 
 
 /obj/structure/morgue/proc/open()
+	playsound(src, 'sound/effects/roll.ogg', 5, 1)
 	playsound(src.loc, 'sound/items/Deconstruct.ogg', 50, 1)
 	src.connected = new /obj/structure/m_tray( src.loc )
 	step(src.connected, src.dir)
@@ -204,6 +206,7 @@
 	var/cremating = 0
 	var/id = 1
 	var/locked = 0
+	unacidable = 1
 
 /obj/structure/morgue/crematorium/update()
 	if (src.connected)
@@ -329,6 +332,7 @@
 	desc = "Apply body before burning."
 	icon = 'icons/obj/stationobjs.dmi'
 	icon_state = "cremat"
+	unacidable = 1
 
 /obj/machinery/button/crematorium
 	name = "crematorium igniter"
@@ -337,6 +341,7 @@
 	icon_state = "crema_switch"
 	req_access = list(access_crematorium)
 	id = 1
+	unacidable = 1
 
 /obj/machinery/button/crematorium/attack_hand(mob/user as mob)
 	if(..())

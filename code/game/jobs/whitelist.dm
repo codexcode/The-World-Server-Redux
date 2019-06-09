@@ -80,4 +80,58 @@ var/list/whitelist = list()
 
 	return 0
 
+/var/list/hard_whitelist = list()
+
+/hook/startup/proc/loadhardWhitelist()
+	load_hardwhitelist()
+	return 1
+
+/proc/load_hardwhitelist()
+	var/text = file2text("config/hardwhitelist.txt")
+	if (!text)
+		log_misc("Failed to load config/hardwhitelist.txt")
+	else
+		hard_whitelist = splittext(text, "\n")
+
+/proc/is_hard_whitelisted(mob/M, var/datum/job/jobs)
+	//They are admin or the whitelist isn't in use
+//	if(whitelist_overrides(M))
+//		return 1
+
+	//The job isn't even whitelisted
+	if(!jobs.hard_whitelisted)
+		return 1
+
+	if(check_rights(R_ADMIN, 0, M))
+		return 1
+
+	//If we have a loaded file, search it
+	if(jobs.hard_whitelisted)
+		for (var/s in hard_whitelist)
+			if(findtext(s,"[M.ckey] - [jobs.title]"))
+				return 1
+			if(findtext(s,"[M.ckey] - All"))
+				return 1
+
+
+
+/proc/get_available_classes(client/C)
+
+	if(!isnum(C.player_age))
+		return ECONOMIC_CLASS
+
+	if(59 < C.player_age)
+		return ECONOMIC_CLASS //60 days unlocks all classes
+
+	else if (29 < C.player_age)
+		return list(CLASS_WORKING, CLASS_MIDDLE)
+
+	else
+		return CLASS_WORKING
+
+
+	return CLASS_WORKING
+
+
+
 #undef WHITELISTFILE

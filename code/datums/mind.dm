@@ -65,6 +65,8 @@
 
 	var/list/initial_email_login = list("login" = "", "password" = "")
 
+	var/datum/preferences/prefs
+
 	//used for antag tcrystal trading, more info in code\game\objects\items\telecrystals.dm
 	var/accept_tcrystals = 0
 
@@ -88,7 +90,7 @@
 			current.verbs -= /datum/changeling/proc/EvolutionMenu
 		current.mind = null
 
-		nanomanager.user_transferred(current, new_character) // transfer active NanoUI instances to new user
+		SSnanoui.user_transferred(current, new_character) // transfer active NanoUI instances to new user
 	if(new_character.mind)		//remove any mind currently in our new body's mind variable
 		new_character.mind.current = null
 
@@ -487,6 +489,8 @@
 /mob/living/proc/mind_initialize()
 	if(mind)
 		mind.key = key
+		if(client)
+			mind.prefs = client.prefs
 	else
 		mind = new /datum/mind(key)
 		mind.original = src

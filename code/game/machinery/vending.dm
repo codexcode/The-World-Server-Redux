@@ -67,6 +67,7 @@
 	var/req_log_access = access_cargo //default access for checking logs is cargo
 	var/has_logs = 0 //defaults to 0, set to anything else for vendor to have logs
 
+	var/vending_sound = "machines/vending_drop.ogg"
 
 /obj/machinery/vending/New()
 	..()
@@ -173,7 +174,7 @@
 			vend(currently_vending, usr)
 			return
 		else if(handled)
-			nanomanager.update_uis(src)
+			SSnanoui.update_uis(src)
 			return // don't smack that machine with your 2 thalers
 
 	if(I || istype(W, /obj/item/weapon/spacecash))
@@ -187,7 +188,7 @@
 		if(panel_open)
 			overlays += image(icon, "[initial(icon_state)]-panel")
 
-		nanomanager.update_uis(src)  // Speaker switch is on the main UI, not wires UI
+		SSnanoui.update_uis(src)  // Speaker switch is on the main UI, not wires UI
 		return
 	else if(istype(W, /obj/item/device/multitool)||istype(W, /obj/item/weapon/wirecutters))
 		if(panel_open)
@@ -199,7 +200,7 @@
 		coin = W
 		categories |= CAT_COIN
 		to_chat(user, "<span class='notice'>You insert \the [W] into \the [src].</span>")
-		nanomanager.update_uis(src)
+		SSnanoui.update_uis(src)
 		return
 	else if(istype(W, /obj/item/weapon/wrench))
 		playsound(src, W.usesound, 100, 1)
@@ -403,7 +404,7 @@
 	else
 		data["panel"] = 0
 
-	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
+	ui = SSnanoui.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if(!ui)
 		ui = new(user, src, ui_key, "vending_machine.tmpl", name, 440, 600)
 		ui.set_initial_data(data)
@@ -463,7 +464,7 @@
 			shut_up = !shut_up
 
 		add_fingerprint(usr)
-		nanomanager.update_uis(src)
+		SSnanoui.update_uis(src)
 
 /obj/machinery/vending/proc/vend(datum/stored_item/vending_product/R, mob/user)
 	if((!allowed(usr)) && !emagged && scan_id)	//For SECURE VENDING MACHINES YEAH
@@ -474,7 +475,7 @@
 	vend_ready = 0 //One thing at a time!!
 	status_message = "Vending..."
 	status_error = 0
-	nanomanager.update_uis(src)
+	SSnanoui.update_uis(src)
 
 	if(R.category & CAT_COIN)
 		if(!coin)
@@ -501,6 +502,7 @@
 	use_power(vend_power_usage)	//actuators and stuff
 	if(icon_vend) //Show the vending animation if needed
 		flick(icon_vend,src)
+	playsound(src.loc, "sound/[vending_sound]", 100, 1)
 	spawn(vend_delay)
 		R.get_product(get_turf(src))
 		if(has_logs)
@@ -514,7 +516,7 @@
 		status_error = 0
 		vend_ready = 1
 		currently_vending = null
-		nanomanager.update_uis(src)
+		SSnanoui.update_uis(src)
 
 	return 1
 
@@ -570,7 +572,7 @@
 	if(has_logs)
 		do_logging(R, user)
 
-	nanomanager.update_uis(src)
+	SSnanoui.update_uis(src)
 
 /obj/machinery/vending/process()
 	if(stat & (BROKEN|NOPOWER))
@@ -732,6 +734,7 @@
 	req_access = list(access_bar)
 	req_log_access = access_bar
 	has_logs = 1
+	vending_sound = "machines/vending_cans.ogg"
 
 /obj/machinery/vending/assist
 	products = list(	/obj/item/device/assembly/prox_sensor = 5,/obj/item/device/assembly/igniter = 3,/obj/item/device/assembly/signaler = 4,
@@ -751,6 +754,7 @@
 	products = list(/obj/item/weapon/reagent_containers/food/drinks/coffee = 25,/obj/item/weapon/reagent_containers/food/drinks/tea = 25,/obj/item/weapon/reagent_containers/food/drinks/h_chocolate = 25)
 	contraband = list(/obj/item/weapon/reagent_containers/food/drinks/ice = 10)
 	prices = list(/obj/item/weapon/reagent_containers/food/drinks/coffee = 3, /obj/item/weapon/reagent_containers/food/drinks/tea = 3, /obj/item/weapon/reagent_containers/food/drinks/h_chocolate = 3)
+	vending_sound = "machines/vending_coffee.ogg"
 
 /obj/machinery/vending/snack
 	name = "Getmore Chocolate Corp"
@@ -760,11 +764,11 @@
 	icon_state = "snack"
 	products = list(/obj/item/weapon/reagent_containers/food/snacks/candy = 2,/obj/item/weapon/reagent_containers/food/drinks/dry_ramen = 8,/obj/item/weapon/reagent_containers/food/snacks/chips =4,
 					/obj/item/weapon/reagent_containers/food/snacks/sosjerky = 2,/obj/item/weapon/reagent_containers/food/snacks/no_raisin = 3,/obj/item/weapon/reagent_containers/food/snacks/spacetwinkie = 1,
-					/obj/item/weapon/reagent_containers/food/snacks/cheesiehonkers = 3, /obj/item/weapon/reagent_containers/food/snacks/tastybread = 2, /obj/item/weapon/reagent_containers/food/snacks/skrellsnacks = 1)
+					/obj/item/weapon/reagent_containers/food/snacks/cheesiehonkers = 3, /obj/item/weapon/reagent_containers/food/snacks/tastybread = 4)
 	contraband = list(/obj/item/weapon/reagent_containers/food/snacks/syndicake = 6,/obj/item/weapon/reagent_containers/food/snacks/unajerky = 6,)
 	prices = list(/obj/item/weapon/reagent_containers/food/snacks/candy = 4,/obj/item/weapon/reagent_containers/food/drinks/dry_ramen = 5,/obj/item/weapon/reagent_containers/food/snacks/chips = 3,
 					/obj/item/weapon/reagent_containers/food/snacks/sosjerky = 6,/obj/item/weapon/reagent_containers/food/snacks/no_raisin = 4,/obj/item/weapon/reagent_containers/food/snacks/spacetwinkie = 12,
-					/obj/item/weapon/reagent_containers/food/snacks/cheesiehonkers = 4, /obj/item/weapon/reagent_containers/food/snacks/tastybread = 7, /obj/item/weapon/reagent_containers/food/snacks/skrellsnacks = 14)
+					/obj/item/weapon/reagent_containers/food/snacks/cheesiehonkers = 4, /obj/item/weapon/reagent_containers/food/snacks/tastybread = 7)
 
 /obj/machinery/vending/cola
 	name = "Robust Softdrinks"
@@ -784,6 +788,7 @@
 					/obj/item/weapon/reagent_containers/food/drinks/cans/iced_tea = 1,/obj/item/weapon/reagent_containers/food/drinks/cans/grape_juice = 1,
 					/obj/item/weapon/reagent_containers/food/drinks/cans/gingerale = 1)
 	idle_power_usage = 211 //refrigerator - believe it or not, this is actually the average power consumption of a refrigerated vending machine according to NRCan.
+	vending_sound = "machines/vending_cans.ogg"
 
 /obj/machinery/vending/cola/New()
 	..()
@@ -812,7 +817,7 @@
 					/obj/item/weapon/reagent_containers/food/drinks/glass2/fitnessflask = 5,
 					/obj/item/weapon/reagent_containers/food/snacks/candy/proteinbar = 5,
 					/obj/item/weapon/reagent_containers/food/snacks/liquidfood = 5,
-					/obj/item/weapon/reagent_containers/pill/diet = 25,
+					/obj/item/weapon/reagent_containers/pill/diet = 35,
 					/obj/item/weapon/towel/random = 40)
 
 	contraband = list(/obj/item/weapon/reagent_containers/syringe/steroid = 4)
@@ -845,7 +850,19 @@
 					/obj/item/weapon/storage/fancy/cigarettes/menthols = 5,
 					/obj/item/weapon/storage/rollingpapers = 5,
 					/obj/item/weapon/storage/box/matches = 10,
-					/obj/item/weapon/flame/lighter/random = 4)
+					/obj/item/weapon/flame/lighter/random = 4,
+					/obj/item/clothing/mask/smokable/ecig/util = 2,
+					///obj/item/clothing/mask/smokable/ecig/deluxe = 2,
+					/obj/item/clothing/mask/smokable/ecig/simple = 2,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/med_nicotine = 10,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/high_nicotine = 5,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/orange = 5,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/mint = 5,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/watermelon = 5,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/grape = 5,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/lemonlime = 5,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/coffee = 5,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/blanknico = 2)
 	contraband = list(/obj/item/weapon/flame/lighter/zippo = 4)
 	premium = list(/obj/item/weapon/storage/fancy/cigar = 5,
 					/obj/item/weapon/storage/fancy/cigarettes/carcinomas = 5,
@@ -858,7 +875,19 @@
 					/obj/item/weapon/storage/fancy/cigarettes/menthols = 18,
 					/obj/item/weapon/storage/rollingpapers = 10,
 					/obj/item/weapon/storage/box/matches = 1,
-					/obj/item/weapon/flame/lighter/random = 2)
+					/obj/item/weapon/flame/lighter/random = 2,
+					/obj/item/clothing/mask/smokable/ecig/util = 100,
+					///obj/item/clothing/mask/smokable/ecig/deluxe = 300,
+					/obj/item/clothing/mask/smokable/ecig/simple = 150,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/med_nicotine = 10,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/high_nicotine = 15,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/orange = 15,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/mint = 15,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/watermelon = 15,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/grape = 15,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/lemonlime = 15,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/coffee = 15,
+					/obj/item/weapon/reagent_containers/ecig_cartridge/blanknico = 15)
 
 /obj/machinery/vending/medical
 	name = "NanoMed Plus"
@@ -1027,6 +1056,7 @@
 	products = list(/obj/item/weapon/reagent_containers/food/drinks/bottle/space_up = 30) // TODO Russian soda can
 	contraband = list(/obj/item/weapon/reagent_containers/food/drinks/bottle/cola = 20) // TODO Russian cola can
 	idle_power_usage = 211 //refrigerator - believe it or not, this is actually the average power consumption of a refrigerated vending machine according to NRCan.
+	vending_sound = "machines/vending_cans.ogg"
 
 /obj/machinery/vending/tool
 	name = "YouTool"
@@ -1103,7 +1133,8 @@
 	desc = "For that special someone!"
 	icon_state = "giftvendor"
 	vend_delay = 15
-	products = list(/obj/item/weapon/storage/fancy/heartbox = 5,
+	products = list(/obj/item/weapon/spacecash/ewallet/lotto = 20,
+					/obj/item/weapon/storage/fancy/heartbox = 5,
 					/obj/item/toy/bouquet = 5,
 					/obj/item/toy/bouquet/fake = 4,
 					/obj/item/weapon/melee/umbrella/random = 10,
@@ -1133,7 +1164,8 @@
 					/obj/item/toy/plushie/tabby_cat = 1)
 	premium = list(/obj/item/weapon/reagent_containers/food/drinks/bottle/champagne = 1,
 					/obj/item/weapon/storage/trinketbox = 2)
-	prices = list(/obj/item/weapon/storage/fancy/heartbox = 15,
+	prices = list(/obj/item/weapon/spacecash/ewallet/lotto = 10,
+					/obj/item/weapon/storage/fancy/heartbox = 15,
 					/obj/item/toy/bouquet = 10,
 					/obj/item/toy/bouquet/fake = 3,
 					/obj/item/weapon/spirit_board = 50,
@@ -1265,98 +1297,98 @@
 						/obj/item/clothing/under/cuttop/red = 10)
 
 	prices = list(
-						/obj/item/clothing/under/pants = 10,
-						/obj/item/clothing/under/pants/ripped = 10,
-						/obj/item/clothing/under/pants/baggy/camo = 10,
-						/obj/item/clothing/under/pants/baggy/track = 10,
-						/obj/item/clothing/under/pants/baggy/youngfolksjeans = 10,
-						/obj/item/clothing/under/pants/baggy/tan = 10,
-						/obj/item/clothing/under/pants/baggy/black = 10,
-						/obj/item/clothing/under/pants/baggy/blackjeans = 10,
-						/obj/item/clothing/under/pants/baggy/greyjeans = 10,
-						/obj/item/clothing/under/pants/baggy/mustangjeans = 10,
-						/obj/item/clothing/under/pants/classicjeans = 10,
-						/obj/item/clothing/under/pants/classicjeans/ripped = 10,
-						/obj/item/clothing/under/pants/greyjeans = 10,
-						/obj/item/clothing/under/pants/greyjeans/ripped = 10,
-						/obj/item/clothing/under/pants/yogapants = 10,
-						/obj/item/clothing/under/pants/baggy/red = 10,
-						/obj/item/clothing/under/pants/baggy/white = 10,
-						/obj/item/clothing/under/pants/blackjeans = 10,
-						/obj/item/clothing/under/pants/blackjeans/ripped = 10,
-						/obj/item/clothing/under/pants/chaps = 10,
-						/obj/item/clothing/under/pants/chaps/black = 10,
-						/obj/item/clothing/under/suit_jacket/burgundy = 10,
-						/obj/item/clothing/under/suit_jacket/burgundy/skirt = 10,
-						/obj/item/clothing/under/suit_jacket/charcoal = 10,
-						/obj/item/clothing/under/suit_jacket/charcoal/skirt = 10,
-						/obj/item/clothing/under/suit_jacket/checkered = 10,
-						/obj/item/clothing/under/suit_jacket/checkered/skirt = 10,
-						/obj/item/clothing/under/suit_jacket/female = 10,
-						/obj/item/clothing/under/suit_jacket/female/skirt = 10,
-						/obj/item/clothing/under/suit_jacket/navy = 10,
-						/obj/item/clothing/under/suit_jacket/navy/skirt = 10,
-						/obj/item/clothing/under/suit_jacket/really_black = 10,
-						/obj/item/clothing/under/suit_jacket/really_black/skirt = 10,
-						/obj/item/clothing/under/suit_jacket/red = 10,
-						/obj/item/clothing/under/suit_jacket/red/skirt = 10,
-						/obj/item/clothing/under/suit_jacket/tan = 10,
-						/obj/item/clothing/under/suit_jacket/tan/skirt = 10,
-						/obj/item/clothing/under/wedding/bride_purple = 1,
-						/obj/item/clothing/under/wedding/bride_red = 1,
-						/obj/item/clothing/under/wedding/bride_blue = 1,
-						/obj/item/clothing/under/wedding/bride_orange = 1,
-						/obj/item/clothing/under/wedding/bride_white = 10,
-						/obj/item/clothing/under/sexyclown = 10,
-						/obj/item/clothing/under/kilt = 10,
-						/obj/item/clothing/under/oldwoman = 10,
-						/obj/item/clothing/under/dress/dress_orange = 10,
-						/obj/item/clothing/under/dress/flamenco = 10,
-						/obj/item/clothing/under/dress/westernbustle = 10,
-						/obj/item/clothing/under/dress/flower_dress = 10,
-						/obj/item/clothing/under/dress/red_swept_dress = 10,
-						/obj/item/clothing/under/dress/dress_green = 10,
-						/obj/item/clothing/under/dress/blacktango = 10,
-						/obj/item/clothing/under/dress/redeveninggown = 10,
-						/obj/item/clothing/under/dress/stripeddress = 10,
-						/obj/item/clothing/under/dress/dress_saloon = 10,
-						/obj/item/clothing/under/dress/dress_fire = 10,
-						/obj/item/clothing/under/dress/dress_hr = 10,
-						/obj/item/clothing/under/dress/dress_green = 10,
-						/obj/item/clothing/under/dress/black_corset = 10,
-						/obj/item/clothing/under/sundress = 10,
-						/obj/item/clothing/under/sundress_white = 10,
-						/obj/item/clothing/under/skirt = 10,
-						/obj/item/clothing/under/skirt/khaki = 10,
-						/obj/item/clothing/under/skirt/blue = 10,
-						/obj/item/clothing/under/skirt/red = 10,
-						/obj/item/clothing/under/skirt/swept = 10,
-						/obj/item/clothing/under/skirt/denim = 10,
-						/obj/item/clothing/under/shorts = 10,
-						/obj/item/clothing/under/shorts/black = 10,
-						/obj/item/clothing/under/shorts/red = 10,
-						/obj/item/clothing/under/shorts/white = 10,
-						/obj/item/clothing/under/shorts/white/female = 10,
-						/obj/item/clothing/under/shorts/blue = 10,
-						/obj/item/clothing/under/shorts/green = 10,
-						/obj/item/clothing/under/shorts/grey = 10,
-						/obj/item/clothing/under/shorts/jeans = 10,
-						/obj/item/clothing/under/shorts/jeans/female = 10,
-						/obj/item/clothing/under/shorts/jeans/black = 10,
-						/obj/item/clothing/under/shorts/jeans/black/female = 10,
-						/obj/item/clothing/under/shorts/jeans/classic = 10,
-						/obj/item/clothing/under/shorts/jeans/classic/female = 10,
-						/obj/item/clothing/under/shorts/jeans/grey = 10,
-						/obj/item/clothing/under/shorts/jeans/grey/female = 10,
-						/obj/item/clothing/under/shorts/jeans/mustang = 10,
-						/obj/item/clothing/under/shorts/jeans/mustang/female = 10,
-						/obj/item/clothing/under/shorts/jeans/youngfolks = 10,
-						/obj/item/clothing/under/shorts/jeans/youngfolks/female = 10,
-						/obj/item/clothing/under/croptop = 10,
-						/obj/item/clothing/under/croptop/grey = 10,
-						/obj/item/clothing/under/croptop/red = 10,
-						/obj/item/clothing/under/cuttop = 10,
-						/obj/item/clothing/under/cuttop/red = 10)
+						/obj/item/clothing/under/pants = 35,
+						/obj/item/clothing/under/pants/ripped = 35,
+						/obj/item/clothing/under/pants/baggy/camo = 35,
+						/obj/item/clothing/under/pants/baggy/track = 35,
+						/obj/item/clothing/under/pants/baggy/youngfolksjeans = 35,
+						/obj/item/clothing/under/pants/baggy/tan = 35,
+						/obj/item/clothing/under/pants/baggy/black = 35,
+						/obj/item/clothing/under/pants/baggy/blackjeans = 35,
+						/obj/item/clothing/under/pants/baggy/greyjeans = 35,
+						/obj/item/clothing/under/pants/baggy/mustangjeans = 35,
+						/obj/item/clothing/under/pants/classicjeans = 35,
+						/obj/item/clothing/under/pants/classicjeans/ripped = 35,
+						/obj/item/clothing/under/pants/greyjeans = 35,
+						/obj/item/clothing/under/pants/greyjeans/ripped = 35,
+						/obj/item/clothing/under/pants/yogapants = 35,
+						/obj/item/clothing/under/pants/baggy/red = 35,
+						/obj/item/clothing/under/pants/baggy/white = 35,
+						/obj/item/clothing/under/pants/blackjeans = 35,
+						/obj/item/clothing/under/pants/blackjeans/ripped = 35,
+						/obj/item/clothing/under/pants/chaps = 25,
+						/obj/item/clothing/under/pants/chaps/black = 25,
+						/obj/item/clothing/under/suit_jacket/burgundy = 50,
+						/obj/item/clothing/under/suit_jacket/burgundy/skirt = 50,
+						/obj/item/clothing/under/suit_jacket/charcoal = 50,
+						/obj/item/clothing/under/suit_jacket/charcoal/skirt = 50,
+						/obj/item/clothing/under/suit_jacket/checkered = 50,
+						/obj/item/clothing/under/suit_jacket/checkered/skirt = 50,
+						/obj/item/clothing/under/suit_jacket/female = 50,
+						/obj/item/clothing/under/suit_jacket/female/skirt = 50,
+						/obj/item/clothing/under/suit_jacket/navy = 50,
+						/obj/item/clothing/under/suit_jacket/navy/skirt = 50,
+						/obj/item/clothing/under/suit_jacket/really_black = 50,
+						/obj/item/clothing/under/suit_jacket/really_black/skirt = 50,
+						/obj/item/clothing/under/suit_jacket/red = 50,
+						/obj/item/clothing/under/suit_jacket/red/skirt = 50,
+						/obj/item/clothing/under/suit_jacket/tan = 50,
+						/obj/item/clothing/under/suit_jacket/tan/skirt = 50,
+						/obj/item/clothing/under/wedding/bride_purple = 120,
+						/obj/item/clothing/under/wedding/bride_red = 120,
+						/obj/item/clothing/under/wedding/bride_blue = 120,
+						/obj/item/clothing/under/wedding/bride_orange = 120,
+						/obj/item/clothing/under/wedding/bride_white = 150,
+						/obj/item/clothing/under/sexyclown = 30,
+						/obj/item/clothing/under/kilt = 20,
+						/obj/item/clothing/under/oldwoman = 20,
+						/obj/item/clothing/under/dress/dress_orange = 50,
+						/obj/item/clothing/under/dress/flamenco = 55,
+						/obj/item/clothing/under/dress/westernbustle = 60,
+						/obj/item/clothing/under/dress/flower_dress = 60,
+						/obj/item/clothing/under/dress/red_swept_dress = 60,
+						/obj/item/clothing/under/dress/dress_green = 60,
+						/obj/item/clothing/under/dress/blacktango = 60,
+						/obj/item/clothing/under/dress/redeveninggown = 60,
+						/obj/item/clothing/under/dress/stripeddress = 60,
+						/obj/item/clothing/under/dress/dress_saloon = 50,
+						/obj/item/clothing/under/dress/dress_fire = 60,
+						/obj/item/clothing/under/dress/dress_hr = 40,
+						/obj/item/clothing/under/dress/dress_green = 40,
+						/obj/item/clothing/under/dress/black_corset = 60,
+						/obj/item/clothing/under/sundress = 60,
+						/obj/item/clothing/under/sundress_white = 50,
+						/obj/item/clothing/under/skirt = 40,
+						/obj/item/clothing/under/skirt/khaki = 60,
+						/obj/item/clothing/under/skirt/blue = 50,
+						/obj/item/clothing/under/skirt/red = 70,
+						/obj/item/clothing/under/skirt/swept = 70,
+						/obj/item/clothing/under/skirt/denim = 50,
+						/obj/item/clothing/under/shorts = 40,
+						/obj/item/clothing/under/shorts/black = 30,
+						/obj/item/clothing/under/shorts/red = 30,
+						/obj/item/clothing/under/shorts/white = 30,
+						/obj/item/clothing/under/shorts/white/female = 30,
+						/obj/item/clothing/under/shorts/blue = 30,
+						/obj/item/clothing/under/shorts/green = 30,
+						/obj/item/clothing/under/shorts/grey = 30,
+						/obj/item/clothing/under/shorts/jeans = 30,
+						/obj/item/clothing/under/shorts/jeans/female = 30,
+						/obj/item/clothing/under/shorts/jeans/black = 30,
+						/obj/item/clothing/under/shorts/jeans/black/female = 30,
+						/obj/item/clothing/under/shorts/jeans/classic = 30,
+						/obj/item/clothing/under/shorts/jeans/classic/female = 30,
+						/obj/item/clothing/under/shorts/jeans/grey = 30,
+						/obj/item/clothing/under/shorts/jeans/grey/female = 30,
+						/obj/item/clothing/under/shorts/jeans/mustang = 30,
+						/obj/item/clothing/under/shorts/jeans/mustang/female = 30,
+						/obj/item/clothing/under/shorts/jeans/youngfolks = 30,
+						/obj/item/clothing/under/shorts/jeans/youngfolks/female = 30,
+						/obj/item/clothing/under/croptop = 30,
+						/obj/item/clothing/under/croptop/grey = 30,
+						/obj/item/clothing/under/croptop/red = 30,
+						/obj/item/clothing/under/cuttop = 30,
+						/obj/item/clothing/under/cuttop/red = 30)
 
 /obj/machinery/vending/suitdispenser
 	name = "\improper Suitlord 9000"
@@ -1434,47 +1466,47 @@
 						 /obj/item/clothing/suit/varsity/brown = 60,
 						 /obj/item/clothing/suit/varsity/green = 60,
 						 /obj/item/clothing/suit/varsity/purple = 60,
-						 /obj/item/clothing/suit/varsity/red = 10,
-						 /obj/item/clothing/suit/whitedress = 10,
-						 /obj/item/clothing/suit/storage/toggle/denim_jacket = 25,
-						 /obj/item/clothing/suit/storage/toggle/denim_jacket/sleeveless = 20,
-						 /obj/item/clothing/accessory/poncho = 10,
-						 /obj/item/clothing/accessory/poncho/green = 10,
-						 /obj/item/clothing/accessory/poncho/red = 10,
-						 /obj/item/clothing/accessory/poncho/purple = 10,
-						 /obj/item/clothing/accessory/poncho/blue = 10,
+						 /obj/item/clothing/suit/varsity/red = 30,
+						 /obj/item/clothing/suit/whitedress = 30,
+						 /obj/item/clothing/suit/storage/toggle/denim_jacket = 35,
+						 /obj/item/clothing/suit/storage/toggle/denim_jacket/sleeveless = 30,
+						 /obj/item/clothing/accessory/poncho = 20,
+						 /obj/item/clothing/accessory/poncho/green = 20,
+						 /obj/item/clothing/accessory/poncho/red = 20,
+						 /obj/item/clothing/accessory/poncho/purple = 20,
+						 /obj/item/clothing/accessory/poncho/blue = 20,
 						 /obj/item/clothing/suit/storage/duster = 40,
 						 /obj/item/clothing/suit/storage/greyjacket = 60,
 						 /obj/item/clothing/suit/jacket/puffer = 40,
 						 /obj/item/clothing/suit/jacket/puffer/vest = 40,
-						 /obj/item/clothing/suit/storage/toggle/leather_jacket = 20,
-						 /obj/item/clothing/suit/storage/toggle/leather_jacket/sleeveless = 20,
-						 /obj/item/clothing/suit/storage/toggle/leather_jacket/nanotrasen = 20,
+						 /obj/item/clothing/suit/storage/toggle/leather_jacket = 40,
+						 /obj/item/clothing/suit/storage/toggle/leather_jacket/sleeveless = 40,
+						 /obj/item/clothing/suit/storage/toggle/leather_jacket/nanotrasen = 40,
 						 /obj/item/clothing/suit/storage/toggle/brown_jacket = 40,
 						 /obj/item/clothing/suit/storage/toggle/brown_jacket/sleeveless = 40,
 						 /obj/item/clothing/suit/storage/toggle/brown_jacket/nanotrasen = 40,
-						 /obj/item/clothing/suit/storage/toggle/hoodie = 20,
-						 /obj/item/clothing/suit/storage/toggle/hoodie/black = 20,
-						 /obj/item/clothing/suit/storage/toggle/hoodie/blue = 20,
-						 /obj/item/clothing/suit/storage/toggle/hoodie/green = 20,
-						 /obj/item/clothing/suit/storage/toggle/hoodie/mu = 20,
-						 /obj/item/clothing/suit/storage/toggle/hoodie/nt = 20,
-						 /obj/item/clothing/suit/storage/toggle/hoodie/orange = 20,
-						 /obj/item/clothing/suit/storage/toggle/hoodie/red = 20,
-						 /obj/item/clothing/suit/storage/toggle/hoodie/smw = 20,
-						 /obj/item/clothing/suit/storage/toggle/hoodie/yellow = 20,
-						 /obj/item/clothing/suit/suspenders = 20,
-						 /obj/item/clothing/accessory/wcoat = 20,
+						 /obj/item/clothing/suit/storage/toggle/hoodie = 30,
+						 /obj/item/clothing/suit/storage/toggle/hoodie/black = 30,
+						 /obj/item/clothing/suit/storage/toggle/hoodie/blue = 30,
+						 /obj/item/clothing/suit/storage/toggle/hoodie/green = 30,
+						 /obj/item/clothing/suit/storage/toggle/hoodie/mu = 30,
+						 /obj/item/clothing/suit/storage/toggle/hoodie/nt = 30,
+						 /obj/item/clothing/suit/storage/toggle/hoodie/orange = 30,
+						 /obj/item/clothing/suit/storage/toggle/hoodie/red = 30,
+						 /obj/item/clothing/suit/storage/toggle/hoodie/smw = 30,
+						 /obj/item/clothing/suit/storage/toggle/hoodie/yellow = 30,
+						 /obj/item/clothing/suit/suspenders = 30,
+						 /obj/item/clothing/accessory/wcoat = 25,
 						 /obj/item/clothing/suit/storage/apron/overalls = 20,
-						 /obj/item/clothing/suit/nun = 20,
-						 /obj/item/clothing/suit/pirate = 20,
-						 /obj/item/clothing/suit/hgpirate = 20,
-						 /obj/item/clothing/suit/leathercoat = 20,
-						 /obj/item/clothing/suit/storage/toggle/track = 15,
-						 /obj/item/clothing/suit/storage/toggle/track/blue = 15,
-						 /obj/item/clothing/suit/storage/toggle/track/green = 15,
-						 /obj/item/clothing/suit/storage/toggle/track/red = 15,
-						 /obj/item/clothing/suit/storage/toggle/track/white = 15,
+						 /obj/item/clothing/suit/nun = 30,
+						 /obj/item/clothing/suit/pirate = 30,
+						 /obj/item/clothing/suit/hgpirate = 30,
+						 /obj/item/clothing/suit/leathercoat = 30,
+						 /obj/item/clothing/suit/storage/toggle/track = 35,
+						 /obj/item/clothing/suit/storage/toggle/track/blue = 35,
+						 /obj/item/clothing/suit/storage/toggle/track/green = 35,
+						 /obj/item/clothing/suit/storage/toggle/track/red = 35,
+						 /obj/item/clothing/suit/storage/toggle/track/white = 35,
 						 /obj/item/clothing/suit/storage/trench = 60,
 						 /obj/item/clothing/suit/storage/trench/grey = 60,
 						 /obj/item/clothing/suit/storage/miljacket = 80,
@@ -1518,34 +1550,34 @@
 						/obj/item/clothing/shoes/slippers = 10,
 						/obj/item/clothing/shoes/heels = 10)
 
-	prices = list(/obj/item/clothing/shoes/sandal = 10,
-						/obj/item/clothing/shoes/black = 10,
-						/obj/item/clothing/shoes/brown = 10,
-						/obj/item/clothing/shoes/blue = 10,
-						/obj/item/clothing/shoes/green = 10,
-						/obj/item/clothing/shoes/yellow = 10,
-						/obj/item/clothing/shoes/purple = 10,
-						/obj/item/clothing/shoes/orange = 10,
-						/obj/item/clothing/shoes/red = 10,
-						/obj/item/clothing/shoes/white = 10,
-						/obj/item/clothing/shoes/hitops = 10,
-						/obj/item/clothing/shoes/hitops/black = 10,
-						/obj/item/clothing/shoes/hitops/brown = 10,
-						/obj/item/clothing/shoes/hitops/blue = 10,
-						/obj/item/clothing/shoes/hitops/green = 10,
-						/obj/item/clothing/shoes/hitops/yellow = 10,
-						/obj/item/clothing/shoes/hitops/purple = 10,
-						/obj/item/clothing/shoes/hitops/orange = 10,
-						/obj/item/clothing/shoes/hitops/red = 10,
-						/obj/item/clothing/shoes/swimmingfins = 10,
-						/obj/item/clothing/shoes/leather = 10,
-						/obj/item/clothing/shoes/dress = 10,
-						/obj/item/clothing/shoes/dress/white = 10,
-						/obj/item/clothing/shoes/boots/winter = 10,
-						/obj/item/clothing/shoes/skater =10,
-						/obj/item/clothing/shoes/laceup = 10,
-						/obj/item/clothing/shoes/slippers = 10,
-						/obj/item/clothing/shoes/heels = 10)
+	prices = list(/obj/item/clothing/shoes/sandal = 30,
+						/obj/item/clothing/shoes/black = 35,
+						/obj/item/clothing/shoes/brown = 35,
+						/obj/item/clothing/shoes/blue = 35,
+						/obj/item/clothing/shoes/green = 35,
+						/obj/item/clothing/shoes/yellow = 35,
+						/obj/item/clothing/shoes/purple = 35,
+						/obj/item/clothing/shoes/orange = 35,
+						/obj/item/clothing/shoes/red = 35,
+						/obj/item/clothing/shoes/white = 35,
+						/obj/item/clothing/shoes/hitops = 35,
+						/obj/item/clothing/shoes/hitops/black = 35,
+						/obj/item/clothing/shoes/hitops/brown = 35,
+						/obj/item/clothing/shoes/hitops/blue = 35,
+						/obj/item/clothing/shoes/hitops/green = 35,
+						/obj/item/clothing/shoes/hitops/yellow = 35,
+						/obj/item/clothing/shoes/hitops/purple = 35,
+						/obj/item/clothing/shoes/hitops/orange = 35,
+						/obj/item/clothing/shoes/hitops/red = 35,
+						/obj/item/clothing/shoes/swimmingfins = 35,
+						/obj/item/clothing/shoes/leather = 35,
+						/obj/item/clothing/shoes/dress = 35,
+						/obj/item/clothing/shoes/dress/white = 35,
+						/obj/item/clothing/shoes/boots/winter = 35,
+						/obj/item/clothing/shoes/skater =40,
+						/obj/item/clothing/shoes/laceup = 50,
+						/obj/item/clothing/shoes/slippers = 15,
+						/obj/item/clothing/shoes/heels = 30)
 
 	premium = list(/obj/item/clothing/shoes/rainbow = 1)
 

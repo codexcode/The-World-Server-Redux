@@ -159,7 +159,7 @@
 				/obj/structure/closet/crate/science
 			),
 			prob(5);list(
-				/obj/item/weapon/storage/secure/briefcase/money,
+//				/obj/item/weapon/storage/secure/briefcase/money,
 				/obj/structure/closet/crate/freezer/rations
 			),
 			prob(5);list(
@@ -206,10 +206,10 @@
 				/obj/structure/closet/crate/engineering
 			),
 			prob(2);list(
-				/obj/item/clothing/head/kitty,
-				/obj/item/clothing/head/kitty,
-				/obj/item/clothing/head/kitty,
-				/obj/item/clothing/head/kitty,
+				/obj/item/clothing/head/cakehat,
+				/obj/item/clothing/head/cakehat,
+				/obj/item/clothing/head/cakehat,
+				/obj/item/clothing/head/cakehat,
 				/obj/structure/closet/crate
 			),
 			prob(2);list(

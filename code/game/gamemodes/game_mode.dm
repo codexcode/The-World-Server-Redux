@@ -8,6 +8,7 @@ var/global/list/additional_antag_types = list()
 	var/config_tag = null
 	var/votable = 1
 	var/probability = 0
+	var/canon = 0 							 // Is this gamemode canon? If 1, characters and money wills save.
 
 	var/required_players = 0                 // Minimum players for round to start if voted in.
 	var/required_players_secret = 0          // Minimum number of players for that game mode to be chose in Secret
@@ -178,12 +179,12 @@ var/global/list/additional_antag_types = list()
 
 /datum/game_mode/proc/refresh_event_modifiers()
 	if(event_delay_mod_moderate || event_delay_mod_major)
-		event_manager.report_at_round_end = 1
+		SSevents.report_at_round_end = 1
 		if(event_delay_mod_moderate)
-			var/datum/event_container/EModerate = event_manager.event_containers[EVENT_LEVEL_MODERATE]
+			var/datum/event_container/EModerate = SSevents.event_containers[EVENT_LEVEL_MODERATE]
 			EModerate.delay_modifier = event_delay_mod_moderate
 		if(event_delay_mod_moderate)
-			var/datum/event_container/EMajor = event_manager.event_containers[EVENT_LEVEL_MAJOR]
+			var/datum/event_container/EMajor = SSevents.event_containers[EVENT_LEVEL_MAJOR]
 			EMajor.delay_modifier = event_delay_mod_major
 
 /datum/game_mode/proc/pre_setup()
@@ -216,6 +217,9 @@ var/global/list/additional_antag_types = list()
 
 	if(emergency_shuttle && auto_recall_shuttle)
 		emergency_shuttle.auto_recall = 1
+
+	if(canon)
+		config.canonicity = 1
 
 	feedback_set_details("round_start","[time2text(world.realtime)]")
 	if(ticker && ticker.mode)
@@ -488,7 +492,7 @@ proc/display_roundstart_logout_report()
 
 		if(L.ckey)
 			var/found = 0
-			for(var/client/C in clients)
+			for(var/client/C in GLOB.clients)
 				if(C.ckey == L.ckey)
 					found = 1
 					break
@@ -558,6 +562,9 @@ proc/get_nt_opposed()
 /mob/verb/check_round_info()
 	set name = "Check Round Info"
 	set category = "OOC"
+
+	if(config.canonicity) //if we're not canon in config or by gamemode, nothing will save.
+		usr << "<b>This is a canon round.</b>"
 
 	if(!ticker || !ticker.mode)
 		usr << "Something is terribly wrong; there is no gametype."

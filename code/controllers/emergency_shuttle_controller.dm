@@ -26,7 +26,7 @@ var/global/datum/emergency_shuttle_controller/emergency_shuttle
 	escape_pods = list()
 	..()
 
-/datum/emergency_shuttle_controller/proc/process()
+/datum/emergency_shuttle_controller/process()
 	if (wait_for_launch)
 		if (evac && auto_recall && world.time >= auto_recall_time)
 			recall()
@@ -35,7 +35,12 @@ var/global/datum/emergency_shuttle_controller/emergency_shuttle
 
 			if (!shuttle.location)	//leaving from the station
 				//launch the pods!
-				for (var/datum/shuttle/ferry/escape_pod/pod in escape_pods)
+				for (var/EP in escape_pods)
+					var/datum/shuttle/ferry/escape_pod/pod
+					if(istype(escape_pods[EP], /datum/shuttle/ferry/escape_pod))
+						pod = escape_pods[EP]
+					else
+						continue
 					if (!pod.arming_controller || pod.arming_controller.armed)
 						pod.launch(src)
 
@@ -57,7 +62,12 @@ var/global/datum/emergency_shuttle_controller/emergency_shuttle
 
 		//arm the escape pods
 		if (evac)
-			for (var/datum/shuttle/ferry/escape_pod/pod in escape_pods)
+			for (var/EP in escape_pods)
+				var/datum/shuttle/ferry/escape_pod/pod
+				if(istype(escape_pods[EP], /datum/shuttle/ferry/escape_pod))
+					pod = escape_pods[EP]
+				else
+					continue
 				if (pod.arming_controller)
 					pod.arming_controller.arm()
 

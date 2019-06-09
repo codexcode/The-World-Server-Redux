@@ -17,8 +17,9 @@
 	var/breakouttime = 1200 //Deciseconds = 120s = 2 minutes
 	var/cuff_sound = 'sound/weapons/handcuffs.ogg'
 	var/cuff_type = "handcuffs"
-	var/use_time = 5 // short stuns, faster cuffing
+	var/use_time = 15 // short stuns, faster cuffing
 	sprite_sheets = list(SPECIES_TESHARI = 'icons/mob/species/seromi/handcuffs.dmi')
+	drop_sound = 'sound/items/drop/accessory.ogg'
 
 /obj/item/weapon/handcuffs/get_worn_icon_state(var/slot_name)
 	if(slot_name == slot_handcuffed_str)
@@ -186,6 +187,7 @@ var/last_chew = 0
 
 /obj/item/weapon/handcuffs/cyborg
 	dispenser = 1
+	use_time = 30
 
 /obj/item/weapon/handcuffs/cable/tape
 	name = "tape restraints"

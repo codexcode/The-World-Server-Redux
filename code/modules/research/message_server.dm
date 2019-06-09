@@ -169,6 +169,11 @@ var/global/list/obj/machinery/message_server/message_servers = list()
 	var/value
 	var/details
 
+/datum/feedback_variable/vv_edit_var(var_name, var_value)
+	if(var_name == NAMEOF(src, variable) || var_name == NAMEOF(src, value) || var_name == NAMEOF(src, details))
+		return FALSE
+	return ..()
+
 /datum/feedback_variable/New(var/param_variable,var/param_value = 0)
 	variable = param_variable
 	value = param_value
@@ -246,6 +251,7 @@ var/obj/machinery/blackbox_recorder/blackbox
 	var/list/msg_cargo = list()
 	var/list/msg_service = list()
 	var/list/msg_legal = list()
+	var/list/msg_government = list()
 	var/list/msg_explorer = list()
 
 	var/list/datum/feedback_variable/feedback = new()
@@ -273,6 +279,7 @@ var/obj/machinery/blackbox_recorder/blackbox
 		BR.msg_cargo = msg_cargo
 		BR.msg_service = msg_service
 		BR.msg_legal = msg_legal
+		BR.msg_government = msg_government
 		BR.feedback = feedback
 		BR.messages = messages
 		BR.messages_admin = messages_admin
@@ -314,6 +321,7 @@ var/obj/machinery/blackbox_recorder/blackbox
 	feedback_add_details("radio_usage","SYN-[msg_syndicate.len]")
 	feedback_add_details("radio_usage","CAR-[msg_cargo.len]")
 	feedback_add_details("radio_usage","SRV-[msg_service.len]")
+	feedback_add_details("radio_usage","GOV-[msg_government.len]")
 	feedback_add_details("radio_usage","LEG-[msg_legal.len]")
 	feedback_add_details("radio_usage","OTH-[messages.len]")
 	feedback_add_details("radio_usage","PDA-[pda_msg_amt]")
@@ -322,6 +330,15 @@ var/obj/machinery/blackbox_recorder/blackbox
 
 	feedback_set_details("round_end","[time2text(world.realtime)]") //This one MUST be the last one that gets set.
 
+/obj/machinery/blackbox_recorder/vv_edit_var(var_name, var_value)
+	var/static/list/blocked_vars		//hacky as fuck kill me
+	if(!blocked_vars)
+		var/obj/machinery/M = new
+		var/list/parent_vars = M.vars.Copy()
+		blocked_vars = vars.Copy() - parent_vars
+	if(var_name in blocked_vars)
+		return FALSE
+	return ..()
 
 //This proc is only to be called at round end.
 /obj/machinery/blackbox_recorder/proc/save_all_data_to_sql()

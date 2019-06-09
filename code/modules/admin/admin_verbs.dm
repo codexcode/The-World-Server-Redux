@@ -5,6 +5,7 @@ var/list/admin_verbs_default = list(
 	/client/proc/deadmin_self,			//destroys our own admin datum so we can play as a regular player,
 	/client/proc/hide_verbs,			//hides all our adminverbs,
 	/client/proc/hide_most_verbs,		//hides all our hideable adminverbs,
+	/client/proc/mark_datum_mapview,	//Lets us mark datums.
 	/client/proc/debug_variables,		//allows us to -see- the variables of any instance in the game. +VAREDIT needed to modify,
 	/client/proc/cmd_check_new_players,	//allows us to see every new player
 //	/client/proc/check_antagonists,		//shows all antags,
@@ -17,6 +18,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/player_panel_new, //shows an interface for all players, with links to various panels,
 	/datum/admins/proc/set_tcrystals,
 	/datum/admins/proc/add_tcrystals,
+	/client/proc/process_payroll,
 	/client/proc/invisimin,				//allows our mob to go invisible/visible,
 	/datum/admins/proc/show_traitor_panel,	//interface which shows a mob's mind.,	/datum/admins/proc/show_game_mode,  //Configuration window for the current game mode.,
 	/datum/admins/proc/force_mode_latespawn, //Force the mode to try a latespawn proc,
@@ -213,7 +215,7 @@ var/list/admin_verbs_debug = list(
 	/client/proc/show_plant_genes,
 	/client/proc/enable_debug_verbs,
 	/client/proc/callproc,
-	/client/proc/callproc_target,
+	/client/proc/callproc_datum,
 	/client/proc/SDQL_query,
 	/client/proc/SDQL2_query,
 	/client/proc/Jump,
@@ -232,7 +234,7 @@ var/list/admin_verbs_debug = list(
 
 var/list/admin_verbs_paranoid_debug = list(
 	/client/proc/callproc,
-	/client/proc/callproc_target,
+	/client/proc/callproc_datum,
 	/client/proc/debug_controller
 	)
 
@@ -256,6 +258,11 @@ var/list/admin_verbs_hideable = list(
 	/datum/admins/proc/toggleguests,
 	/datum/admins/proc/announce,
 	/client/proc/colorooc,
+	/client/proc/toggle_canon,
+	/client/proc/department_account_view,
+	/client/proc/save_all_characters,
+	/client/proc/save_department_accounts,
+	/client/proc/load_department_accounts,
 	/client/proc/admin_ghost,
 	/client/proc/toggle_view_range,
 	/datum/admins/proc/view_txt_log,
@@ -300,7 +307,7 @@ var/list/admin_verbs_hideable = list(
 	/client/proc/restart_controller,
 	/client/proc/cmd_admin_list_open_jobs,
 	/client/proc/callproc,
-	/client/proc/callproc_target,
+	/client/proc/callproc_datum,
 	/client/proc/Debug2,
 	/client/proc/reload_admins,
 	/client/proc/kill_air,
@@ -340,6 +347,7 @@ var/list/admin_verbs_mod = list(
 	/client/proc/toggle_attack_logs,
 	/client/proc/cmd_admin_subtle_message, 	//send an message to somebody as a 'voice in their head',
 	/datum/admins/proc/paralyze_mob,
+	/datum/admins/proc/view_persistent_data,
 	/client/proc/cmd_admin_direct_narrate,
 	/client/proc/allow_character_respawn,   // Allows a ghost to respawn ,
 	/datum/admins/proc/sendFax,
@@ -368,7 +376,7 @@ var/list/admin_verbs_event_manager = list(
 	/proc/possess,
 	/proc/release,
 	/client/proc/callproc,
-	/client/proc/callproc_target,
+	/client/proc/callproc_datum,
 	/client/proc/debug_controller,
 	/client/proc/show_gm_status,
 	/datum/admins/proc/change_weather,
@@ -391,6 +399,11 @@ var/list/admin_verbs_event_manager = list(
 	/client/proc/toggle_random_events,
 	/client/proc/editappear,
 	/client/proc/roll_dices,
+	/client/proc/toggle_canon,
+	/client/proc/save_all_characters,
+	/client/proc/department_account_view,
+	/client/proc/save_department_accounts,
+	/client/proc/load_department_accounts,
 	/datum/admins/proc/call_supply_drop,
 	/datum/admins/proc/call_drop_pod
 )
@@ -619,7 +632,7 @@ var/list/admin_verbs_event_manager = list(
 		return
 
 	var/datum/preferences/D
-	var/client/C = directory[warned_ckey]
+	var/client/C = GLOB.directory[warned_ckey]
 	if(C)	D = C.prefs
 	else	D = preferences_datums[warned_ckey]
 
@@ -1108,3 +1121,13 @@ var/list/admin_verbs_event_manager = list(
 
 	log_admin("[key_name(usr)] told [key_name(T)] that ERP has been detected, and that jesus will be on their way.")
 	message_admins("\blue [key_name_admin(usr)] told [key_name(T)] that ERP has been detected, and that jesus will be on their way.", 1)
+
+/client/proc/process_payroll()
+	set category = "Economy"
+	set name = "Process Payroll"
+	set desc = "Pays everyone."
+
+	//Search general records, and process payroll for all those that have bank numbers.
+	for(var/datum/data/record/R in data_core.general)
+		payroll(R)
+		command_announcement.Announce("Hourly payroll has been processed. Please check your bank accounts for your latest payment.", "Payroll")

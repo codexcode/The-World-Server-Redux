@@ -1,9 +1,14 @@
+/obj/item/clothing/head/
+	name = "hat"
+	desc = "Apply on head."
+	drop_sound = 'sound/items/drop/hat.ogg'
 
 //Hat Station 13
 
 /obj/item/clothing/head/collectable
 	name = "collectable hat"
 	desc = "A rare collectable hat."
+	drop_sound = 'sound/items/drop/paper.ogg'
 
 /obj/item/clothing/head/collectable/petehat
 	name = "ultra rare hat"
@@ -87,7 +92,7 @@
 	desc = "You'd make a great Dread Syndie Roberts!"
 	icon_state = "pirate"
 	body_parts_covered = 0
-
+/*
 /obj/item/clothing/head/collectable/kitty
 	name = "collectable kitty ears"
 	desc = "The fur feels.....a bit too realistic."
@@ -99,7 +104,7 @@
 	desc = "Not as lucky as the feet!"
 	icon_state = "bunny"
 	body_parts_covered = 0
-
+*/
 /obj/item/clothing/head/collectable/wizard
 	name = "collectable wizard's hat"
 	desc = "NOTE:Any magical powers gained from wearing this hat are purely coincidental."

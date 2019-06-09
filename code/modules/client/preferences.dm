@@ -26,9 +26,14 @@ datum/preferences
 
 	//character preferences
 	var/real_name						//our character's name
-	var/be_random_name = 0				//whether we are a random name every round
+//	var/be_random_name = 0				//whether we are a random name every round
 	var/nickname						//our character's nickname
 	var/age = 30						//age of character
+	var/birth_day = 1					//day you were born
+	var/birth_month	= 1					//month you were born
+	var/birth_year						//year you were born
+	// There's no birth year, as that's automatically calculated by your age.
+
 	var/spawnpoint = "Arrivals Shuttle" //where this character will spawn (0-2).
 	var/b_type = "O+"					//blood type (not-chooseable)
 	var/backbag = 2					//backpack type
@@ -38,6 +43,7 @@ datum/preferences
 	var/g_hair = 0						//Hair color
 	var/b_hair = 0						//Hair color
 	var/f_style = "Shaved"				//Face hair type
+	var/lip_style						//Lips/Makeup Style
 	var/r_facial = 0					//Face hair color
 	var/g_facial = 0					//Face hair color
 	var/b_facial = 0					//Face hair color
@@ -49,6 +55,8 @@ datum/preferences
 	var/g_eyes = 0						//Eye color
 	var/b_eyes = 0						//Eye color
 	var/species = SPECIES_HUMAN         //Species datum to use.
+	var/weight = 120
+	var/calories = 420000				// Used for calculation of weight.
 	var/species_preview                 //Used for the species selection window.
 	var/list/alternate_languages = list() //Secondary language(s)
 	var/list/language_prefixes = list() //Kanguage prefix keys
@@ -85,6 +93,16 @@ datum/preferences
 	var/job_engsec_med = 0
 	var/job_engsec_low = 0
 
+	var/job_govlaw_high = 0
+	var/job_govlaw_med = 0
+	var/job_govlaw_low = 0
+
+	// Money related
+
+	var/money_balance = 0
+	var/bank_pin
+	var/bank_no
+
 	//Keeps track of preferrence for not getting any wanted jobs
 	var/alternate_option = 1
 
@@ -110,6 +128,7 @@ datum/preferences
 	var/disabilities = 0
 
 	var/economic_status = "Working Class"
+
 	var/uplinklocation = "PDA"
 
 	// OOC Metadata:
@@ -118,6 +137,7 @@ datum/preferences
 
 	var/client/client = null
 	var/client_ckey = null
+	var/unique_id
 
 	// Communicator identity data
 	var/communicator_visibility = 1
@@ -126,6 +146,9 @@ datum/preferences
 	var/datum/browser/panel
 
 	var/lastnews // Hash of last seen lobby news content.
+
+	var/existing_character = 0 //when someone spawns with this character for the first time or confirms, it's set to 1.
+	var/played = 0 //this will set to 1 once someone plays this character on a canon round.
 
 /datum/preferences/New(client/C)
 	player_setup = new(src)
@@ -144,6 +167,8 @@ datum/preferences
 			load_path(C.ckey)
 			if(load_preferences())
 				if(load_character())
+
+
 					return
 
 /datum/preferences/proc/ZeroSkills(var/forced = 0)
@@ -213,7 +238,8 @@ datum/preferences
 		dat += "<a href='?src=\ref[src];load=1'>Load slot</a> - "
 		dat += "<a href='?src=\ref[src];save=1'>Save slot</a> - "
 		dat += "<a href='?src=\ref[src];reload=1'>Reload slot</a> - "
-		dat += "<a href='?src=\ref[src];resetslot=1'>Reset slot</a>"
+		dat += "<a href='?src=\ref[src];resetslot=1'>Reset slot</a> - "
+		dat += "<a href='?src=\ref[src];deleteslot=1'>Delete slot</a>"
 
 	else
 		dat += "Please create an account to save your preferences."
@@ -250,6 +276,7 @@ datum/preferences
 	if(href_list["save"])
 		save_preferences()
 		save_character()
+		make_existing()
 	else if(href_list["reload"])
 		load_preferences()
 		load_character()
@@ -267,6 +294,10 @@ datum/preferences
 			return 0
 		load_character(SAVE_RESET)
 		sanitize_preferences()
+	else if(href_list["deleteslot"])
+		if("No" == alert("This will delete the current slot. Continue?", "Delete current slot?", "No", "Yes"))
+			return 0
+		delete_character()
 	else
 		return 0
 
@@ -280,8 +311,10 @@ datum/preferences
 	// This needs to happen before anything else becuase it sets some variables.
 	character.set_species(species)
 	// Special Case: This references variables owned by two different datums, so do it here.
-	if(be_random_name)
-		real_name = random_name(identifying_gender,species)
+//	if(be_random_name)
+//		real_name = random_name(identifying_gender,species)
+
+	character.adjust_aging()
 
 	// Ask the preferences datums to apply their own settings to the new mob
 	player_setup.copy_to_mob(character)
@@ -294,28 +327,37 @@ datum/preferences
 		character.update_hair()
 
 /datum/preferences/proc/open_load_dialog(mob/user)
-	var/dat = "<body>"
-	dat += "<tt><center>"
+	var/dat = "<body><center>"
 
 	var/savefile/S = new /savefile(path)
 	if(S)
-		dat += "<b>Select a character slot to load</b><hr>"
+		dat += "<h1>Character Selection<h1><br>"
+		dat += "<b>Currently selected: </b>"
+		dat += "<a href='?src=\ref[src];changeslot=[default_slot]'>[real_name]</a><br>"
+		dat += "Select a character slot to load:<hr>"
 		var/name
 		for(var/i=1, i<= config.character_slots, i++)
 			S.cd = "/character[i]"
 			S["real_name"] >> name
-			if(!name)	name = "Character[i]"
+			if(!name)	name = "Empty Slot [i]"
 			if(i==default_slot)
-				name = "<b>[name]</b>"
+				name = "[name]"
 			dat += "<a href='?src=\ref[src];changeslot=[i]'>[name]</a><br>"
 
-	dat += "<hr>"
-	dat += "</center></tt>"
+	dat += "</center></body>"
 	//user << browse(dat, "window=saves;size=300x390")
-	panel = new(user, "Character Slots", "Character Slots", 300, 390, src)
+	panel = new(user, "Character Slots", "Character Slots", 300, 420, src)
 	panel.set_content(dat)
 	panel.open()
 
 /datum/preferences/proc/close_load_dialog(mob/user)
 	//user << browse(null, "window=saves")
 	panel.close()
+
+/datum/preferences/proc/make_existing()
+	existing_character = 1
+	return 1
+
+/datum/preferences/proc/make_editable()
+	existing_character = 0
+	return 1

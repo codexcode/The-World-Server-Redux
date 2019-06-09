@@ -4,6 +4,7 @@
 	desc = "It's good to be emperor."
 	siemens_coefficient = 0.9
 	body_parts_covered = 0
+	drop_sound = 'sound/items/drop/ring.ogg'
 
 /obj/item/clothing/head/centhat/customs
 	name = "Customs Hat"
@@ -17,6 +18,7 @@
 	desc = "A nice hair pin."
 	slot_flags = SLOT_HEAD | SLOT_EARS
 	body_parts_covered = 0
+	drop_sound = 'sound/items/drop/box.ogg'
 
 /obj/item/clothing/head/pin/pink
 	icon_state = "pinkpin"
@@ -42,6 +44,7 @@
 	name = "red flower pin"
 	icon_state = "hairflower"
 	desc = "Smells nice."
+	drop_sound = 'sound/items/drop/herb.ogg'
 
 /obj/item/clothing/head/pin/flower/blue
 	icon_state = "hairflower_blue"
@@ -181,13 +184,13 @@
 
 /obj/item/clothing/head/justice/pink
 	icon_state = "justicepink"
-
+/*
 /obj/item/clothing/head/rabbitears
 	name = "rabbit ears"
 	desc = "Wearing these makes you looks useless, and only good for your sex appeal."
 	icon_state = "bunny"
 	body_parts_covered = 0
-
+*/
 /obj/item/clothing/head/flatcap
 	name = "flat cap"
 	desc = "A working man's cap."
