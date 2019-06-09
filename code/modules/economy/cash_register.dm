@@ -306,6 +306,7 @@
 			T.source_terminal = machine_id
 			T.date = current_date_string
 			T.time = stationtime2text()
+			T.target_ckey = usr.client.ckey
 			linked_account.transaction_log.Add(T)
 
 			// Save log
@@ -341,7 +342,7 @@
 		cash_stored += transaction_amount
 
 		// Save log
-		add_transaction_log("n/A", "Cash", transaction_amount)
+		add_transaction_log("n/A", "Cash", transaction_amount, usr.client.ckey)
 
 		// Confirm and reset
 		transaction_complete()
@@ -519,23 +520,23 @@
 //--Premades--//
 
 /obj/machinery/cash_register/command
-	account_to_connect = "Command"
+	account_to_connect = "City Council"
 	..()
 
 /obj/machinery/cash_register/medical
-	account_to_connect = "Medical"
+	account_to_connect = "Public Healthcare"
 	..()
 
 /obj/machinery/cash_register/engineering
-	account_to_connect = "Engineering"
+	account_to_connect = "Emergency and Maintenance"
 	..()
 
 /obj/machinery/cash_register/science
-	account_to_connect = "Science"
+	account_to_connect = "Research and Science"
 	..()
 
 /obj/machinery/cash_register/security
-	account_to_connect = "Security"
+	account_to_connect = "Police"
 	..()
 
 /obj/machinery/cash_register/cargo
@@ -544,4 +545,12 @@
 
 /obj/machinery/cash_register/civilian
 	account_to_connect = "Civilian"
+	..()
+
+/obj/machinery/cash_register/bar
+	account_to_connect = "Bar"
+	..()
+
+/obj/machinery/cash_register/botany
+	account_to_connect = "Botany"
 	..()

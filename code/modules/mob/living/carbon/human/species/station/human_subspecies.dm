@@ -75,11 +75,22 @@
 	max_age = 17
 	bandages_icon = 'icons/mob/bandage.dmi'
 	total_health = 85
-	economic_modifier = 1
+	additional_wage = 20
 	icon_scale = 0.9
 	brute_mod = 0.5
 	male_scream_sound		= 'sound/voice/human/boy_scream.ogg'
 	female_scream_sound	= 'sound/voice/human/girl_scream.ogg'
+
+
+	max_calories = TEEN_WEIGHT_MAX // Above this, heart attacks will happen
+	min_calories = TEEN_WEIGHT_MIN //Below this, this species will die
+
+	normal_calories =  TEEN_WEIGHT_NORMAL
+	thinner_calories = TEEN_WEIGHT_THINNER
+	thin_calories = TEEN_WEIGHT_THIN
+	fat_calories = TEEN_WEIGHT_FAT
+	obese_calories = TEEN_WEIGHT_OBESE
+
 
 /datum/species/human/child
 	name = "Human Child"
@@ -96,8 +107,17 @@
 	bandages_icon = 'icons/mob/bandage.dmi'
 	total_health = 50
 	brute_mod = 0.2
-	economic_modifier = 0.2
+	additional_wage = 10
 	icon_scale = 0.75
 	male_scream_sound		= 'sound/voice/human/boy_scream.ogg'
 	female_scream_sound	= 'sound/voice/human/girl_scream.ogg'
 	can_drive = 0
+
+	max_calories = KID_WEIGHT_MAX // Above this, heart attacks will happen
+	min_calories = KID_WEIGHT_MIN //Below this, this species will die
+
+	normal_calories = KID_WEIGHT_NORMAL
+	thinner_calories = KID_WEIGHT_THINNER
+	thin_calories = KID_WEIGHT_THIN
+	fat_calories = KID_WEIGHT_FAT
+	obese_calories = KID_WEIGHT_OBESE

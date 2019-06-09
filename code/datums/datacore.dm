@@ -91,22 +91,22 @@
 
 
 	if(heads.len > 0)
-		dat += "<tr><th colspan=3>Heads</th></tr>"
+		dat += "<tr><th colspan=3>Council</th></tr>"
 		for(name in heads)
 			dat += "<tr[even ? " class='alt'" : ""]><td>[name]</td><td>[heads[name]]</td><td>[isactive[name]]</td></tr>"
 			even = !even
 	if(sec.len > 0)
-		dat += "<tr><th colspan=3>Security</th></tr>"
+		dat += "<tr><th colspan=3>Police</th></tr>"
 		for(name in sec)
 			dat += "<tr[even ? " class='alt'" : ""]><td>[name]</td><td>[sec[name]]</td><td>[isactive[name]]</td></tr>"
 			even = !even
 	if(eng.len > 0)
-		dat += "<tr><th colspan=3>Engineering</th></tr>"
+		dat += "<tr><th colspan=3>Emergency</th></tr>"
 		for(name in eng)
 			dat += "<tr[even ? " class='alt'" : ""]><td>[name]</td><td>[eng[name]]</td><td>[isactive[name]]</td></tr>"
 			even = !even
 	if(med.len > 0)
-		dat += "<tr><th colspan=3>Medical</th></tr>"
+		dat += "<tr><th colspan=3>Hospital</th></tr>"
 		for(name in med)
 			dat += "<tr[even ? " class='alt'" : ""]><td>[name]</td><td>[med[name]]</td><td>[isactive[name]]</td></tr>"
 			even = !even
@@ -188,6 +188,7 @@
 			G.fields["brain_type"] = H.get_FBP_type()
 		else
 			G.fields["brain_type"] = "Organic"
+		G.fields["unique_id"]	= H.mind.prefs.unique_id // this is persistent
 		G.fields["fingerprint"]	= md5(H.dna.uni_identity)
 		G.fields["p_stat"]		= "Active"
 		G.fields["m_stat"]		= "Stable"
@@ -196,6 +197,8 @@
 		G.fields["home_system"]	= H.home_system
 		G.fields["citizenship"]	= H.citizenship
 		G.fields["faction"]		= H.personal_faction
+		G.fields["bank_number"]	= H.mind.initial_account.account_number
+		G.fields["economic_status"]	= H.mind.prefs.economic_status
 		G.fields["religion"]	= H.religion
 		if(H.gen_record && !jobban_isbanned(H, "Records"))
 			G.fields["notes"] = H.gen_record
@@ -228,6 +231,7 @@
 		L.fields["rank"] 		= H.mind.assigned_role
 		L.fields["age"]			= H.age
 		L.fields["fingerprint"]	= md5(H.dna.uni_identity)
+		G.fields["unique_id"]	= H.mind.prefs.unique_id
 		L.fields["sex"]			= gender2text(H.gender)
 		L.fields["id_gender"]	= gender2text(H.identifying_gender)
 		if(H.get_FBP_type())
@@ -288,6 +292,8 @@
 	G.fields["citizenship"]	= "Unknown"
 	G.fields["faction"]		= "Unknown"
 	G.fields["religion"]	= "Unknown"
+	G.fields["bank_number"]	= "Unknown"
+	G.fields["economic_status"]	= "Unknown"
 	G.fields["photo_front"]	= front
 	G.fields["photo_side"]	= side
 	G.fields["notes"] = "No notes found."
@@ -301,6 +307,7 @@
 	R.name = "Security Record #[id]"
 	R.fields["name"] = name
 	R.fields["id"] = id
+	R.fields["bank_number"]	= "Unknown"
 	R.fields["brain_type"] = "Unknown"
 	R.fields["criminal"]	= "None"
 	R.fields["pre_con"]		= "None"

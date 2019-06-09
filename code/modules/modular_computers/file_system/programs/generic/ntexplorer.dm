@@ -21,6 +21,10 @@
 	var/browser_url
 	var/interactive_website
 
+	var/party_cost
+
+
+
 /datum/nano_module/nt_explorer/New()
 	..()
 	if(!websites.len)
@@ -34,6 +38,10 @@
 		browser_title = current_website.title
 		browser_url = current_website.name
 		interactive_website = current_website.interactive_website
+
+/datum/nano_module/nt_explorer/proc/browse_url(var/url)
+	current_website = locate(url) in websites
+	fetch_website_data()
 
 /datum/nano_module/nt_explorer/proc/search(mob/user)
 	if(!websites.len)
@@ -65,7 +73,7 @@
 	data["website_url"] = browser_url
 	data["interactive_website"] = interactive_website
 
-	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
+	ui = SSnanoui.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
 		ui = new(user, src, ui_key, "ntnet_explorer.tmpl", "NtNet Explorer", 690, 680, state = state)
 		ui.add_template("Website", "ntnet_explorer_website.tmpl") // Main body

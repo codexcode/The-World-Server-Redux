@@ -17,7 +17,7 @@
 #define TICKS *world.tick_lag
 
 #define DS2TICKS(DS) (DS/world.tick_lag)	// Convert deciseconds to ticks
-#define TICKS2DS(T) (T TICKS) 				// Convert ticks to deciseconds
+#define TICKS2DS(T) ((T) TICKS) 				// Convert ticks to deciseconds
 
 /proc/get_game_time()
 	var/global/time_offset = 0
@@ -40,9 +40,9 @@ var/station_date = ""
 var/next_station_date_change = 1 DAY
 
 #define duration2stationtime(time) time2text(station_time_in_ticks + time, "hh:mm")
-#define worldtime2stationtime(time) time2text(roundstart_hour HOURS + time, "hh:mm")
+#define worldtime2stationtime(time) time2text(get_game_hour() HOURS + time, "hh:mm")
 #define round_duration_in_ticks (round_start_time ? world.time - round_start_time : 0)
-#define station_time_in_ticks (roundstart_hour HOURS + round_duration_in_ticks)
+#define station_time_in_ticks (get_game_hour() HOURS + round_duration_in_ticks)
 
 /proc/stationtime2text()
 	return time2text(station_time_in_ticks, "hh:mm")
@@ -55,8 +55,50 @@ var/next_station_date_change = 1 DAY
 	if(!station_date || update_time)
 		var/extra_days = round(station_time_in_ticks / (1 DAY)) DAYS
 		var/timeofday = world.timeofday + extra_days
-		station_date = num2text((text2num(time2text(timeofday, "YYYY"))+544)) + "-" + time2text(timeofday, "MM-DD")
+		station_date = num2text((text2num(time2text(timeofday, "YYYY"))+config.years_in_future)) + "-" + time2text(timeofday, "MM-DD")
 	return station_date
+
+/proc/get_game_year()
+	var/game_year = (time2text(world.timeofday, "YYYY"))
+	game_year = (text2num(game_year)) + config.years_in_future
+	return game_year
+
+/proc/get_game_month()
+	var/game_month = (time2text(world.timeofday, "MM"))
+	game_month = (text2num(game_month)) + config.months_in_future
+	return game_month
+
+/proc/get_game_day()
+	var/game_day = (time2text(world.timeofday, "DD"))
+	game_day = (text2num(game_day)) + config.days_in_future
+	return game_day
+
+/proc/get_game_hour()
+	var/game_hour = (time2text(world.timeofday, "hh"))
+	game_hour = (text2num(game_hour))
+	return game_hour
+
+/proc/get_game_minute()
+	var/game_minute = (time2text(world.timeofday, "mm"))
+	game_minute = (text2num(game_minute))
+	return game_minute
+
+/proc/get_year()
+	var/year = (time2text(world.timeofday, "YYYY"))
+	year = (text2num(year)) + config.years_in_future
+	return year
+
+/proc/get_month()
+	var/month = (time2text(world.timeofday, "MM"))
+	month = (text2num(month)) + config.months_in_future
+	return month
+
+/proc/get_day()
+	var/day = (time2text(world.timeofday, "DD"))
+	day = (text2num(day))
+	return day
+
+
 
 //ISO 8601
 /proc/time_stamp()
@@ -103,7 +145,7 @@ var/round_start_time = 0
 	return last_round_duration
 
 //Can be useful for things dependent on process timing
-/proc/process_schedule_interval(var/process_name)
+proc/process_schedule_interval(var/process_name)
 	var/datum/controller/process/process = processScheduler.getProcess(process_name)
 	return process.schedule_interval
 
@@ -135,6 +177,6 @@ var/round_start_time = 0
 		. += CEILING(i*DELTA_CALC, 1)
 		sleep(i*world.tick_lag*DELTA_CALC)
 		i *= 2
-	while (TICK_USAGE > min(TICK_LIMIT_TO_RUN, Master.current_ticklimit))
+	while (TICK_USAGE > min(TICK_LIMIT_TO_RUN, GLOB.CURRENT_TICKLIMIT))
 
 #undef DELTA_CALC

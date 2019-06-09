@@ -4,6 +4,8 @@
 	storage_slots = 10
 	icon = 'icons/obj/wallet.dmi'
 	icon_state = "wallet-orange"
+	drop_sound = 'sound/items/drop/leather.ogg'
+
 	w_class = ITEMSIZE_SMALL
 	can_hold = list(
 		/obj/item/weapon/spacecash,
@@ -78,6 +80,7 @@
 	else
 		return ..()
 
+/*
 /obj/item/weapon/storage/wallet/random/New()
 	..()
 	var/amount = rand(50, 100) + rand(50, 100) // Triangular distribution from 100 to 200
@@ -90,7 +93,7 @@
 			amount -= i
 			SC.adjust_worth(i, 0)
 		SC.update_icon()
-
+*/
 /obj/item/weapon/storage/wallet/poly
 	name = "polychromic wallet"
 	desc = "You can recolor it! Fancy! The future is NOW!"

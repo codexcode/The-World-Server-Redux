@@ -26,6 +26,7 @@
 	var/base_icon
 	var/base_name
 	var/unwielded_force_divisor = 0.25
+	drop_sound = 'sound/items/drop/axe.ogg'
 
 /obj/item/weapon/material/twohanded/update_held_icon()
 	var/mob/living/M = loc
@@ -144,10 +145,10 @@
 	force = 10
 	w_class = ITEMSIZE_LARGE
 	slot_flags = SLOT_BACK
-	force_divisor = 0.5 			// 15 when wielded with hardness 15 (glass)
-	unwielded_force_divisor = 0.375
-	thrown_force_divisor = 1.5 		// 20 when thrown with weight 15 (glass)
-	throw_speed = 3
+	force_divisor = 0.3 			// 15 when wielded with hardness 15 (glass)
+	unwielded_force_divisor = 0.2
+	thrown_force_divisor = 1.1 		// 20 when thrown with weight 15 (glass)
+
 	edge = 0
 	sharp = 1
 	hitsound = 'sound/weapons/bladeslice.ogg'
