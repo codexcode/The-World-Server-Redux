@@ -16,6 +16,7 @@
 	max_storage_space = INVENTORY_STANDARD_SPACE
 	var/flippable = 0
 	var/side = 0 //0 = right, 1 = left
+	drop_sound = 'sound/items/drop/backpack.ogg'
 
 /obj/item/weapon/storage/backpack/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (src.use_sound)
@@ -194,7 +195,7 @@
 	item_state_slots = list(slot_r_hand_str = "briefcase", slot_l_hand_str = "briefcase")
 
 /obj/item/weapon/storage/backpack/satchel/withwallet
-	starts_with = list(/obj/item/weapon/storage/wallet/random)
+	starts_with = list(/obj/item/weapon/storage/wallet)
 
 /obj/item/weapon/storage/backpack/satchel/norm
 	name = "satchel"

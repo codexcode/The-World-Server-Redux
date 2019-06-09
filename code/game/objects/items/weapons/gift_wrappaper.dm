@@ -13,6 +13,7 @@
 	icon = 'icons/obj/items.dmi'
 	icon_state = "gift1"
 	item_state = "gift1"
+	drop_sound = 'sound/items/drop/box.ogg'
 
 /obj/item/weapon/a_gift/New()
 	..()
@@ -26,6 +27,7 @@
 
 /obj/item/weapon/gift/attack_self(mob/user as mob)
 	user.drop_item()
+	playsound(src.loc, 'sound/items/package_unwrap.ogg', 50,1)
 	if(src.gift)
 		user.put_in_active_hand(gift)
 		src.gift.add_fingerprint(user)
@@ -69,10 +71,7 @@
 		/obj/item/toy/eight_ball/conch,
 		/obj/item/toy/griffin,
 		/obj/item/toy/snappop,
-		/obj/item/weapon/spacecash/c200,
-		/obj/item/weapon/spacecash/c100,
 		/obj/item/weapon/spacecash/c10,
-		/obj/item/weapon/spacecash/c500,
 		/obj/item/weapon/dice,
 		/obj/item/weapon/lipstick/random,
 		/obj/item/device/camera,

@@ -114,6 +114,7 @@
 	var/charges = 0.0
 	var/nutrition = 400//Carbon
 	var/hydration = 400
+	var/calories = WEIGHT_NORMAL
 
 	var/overeatduration = 0		// How long this guy is overeating //Carbon
 	var/paralysis = 0.0
@@ -127,6 +128,9 @@
 	var/m_intent = "run"//Living
 	var/lastKnownIP = null
 	var/obj/buckled = null//Living
+	var/hand = null
+	var/obj/item/l_hand = null//Living
+	var/obj/item/r_hand = null//Living
 
 	var/seer = 0 //for cult//Carbon, probably Human
 

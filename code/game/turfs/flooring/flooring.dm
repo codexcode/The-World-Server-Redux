@@ -44,6 +44,8 @@ var/list/flooring_types
 	var/can_paint
 	var/list/footstep_sounds = list() // key=species name, value = list of soundss
 
+	var/can_engrave = FALSE
+
 /decl/flooring/grass
 	name = "grass"
 	desc = "Do they smoke grass out in space, Bowie? Or do they smoke AstroTurf?"
@@ -223,6 +225,8 @@ var/list/flooring_types
 		'sound/effects/footstep/floor3.ogg',
 		'sound/effects/footstep/floor4.ogg',
 		'sound/effects/footstep/floor5.ogg'))
+
+	can_engrave = TRUE
 
 /decl/flooring/tiling/tech
 	desc = "Scuffed from the passage of countless greyshirts."
@@ -448,6 +452,7 @@ var/list/flooring_types
 	icon = 'icons/turf/roads.dmi'
 	icon_base = "road"
 	build_type = /obj/item/stack/tile/road
+	flags = TURF_REMOVE_MINEREQUIP | TURF_ACID_IMMUNE
 	footstep_sounds = list("human" = list(
 		'sound/effects/footstep/pavement1.ogg',
 		'sound/effects/footstep/pavement2.ogg',
