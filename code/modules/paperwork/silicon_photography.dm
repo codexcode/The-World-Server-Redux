@@ -1,6 +1,6 @@
-/**************
-* AI-specific *
-**************/
+//**************
+//* AI-specific *
+//**************/
 /obj/item/device/camera/siliconcam
 	var/in_camera_mode = 0
 	var/photos_taken = 0
