@@ -13,4 +13,4 @@
 /datum/gear/paperwork/accessmod
 	path = /obj/item/weapon/paperwork/accessmodification
 	display_name = "Access Modification Paperwork for clerks"
-	description = "owo"
+	description = "paperwork for clerks, yay"
