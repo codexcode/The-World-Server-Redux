@@ -11,6 +11,19 @@
 	description = "Weapon Permit Application, woo"
 
 /datum/gear/paperwork/accessmod
-	path = /obj/item/weapon/paperwork/accessmodification
+	path = /obj/item/weapon/paper/paperwork/accessmodification
 	display_name = "Access Modification Paperwork for clerks"
-	description = "paperwork for clerks, yay"
+	description = "paperwork for clerks, yay. Only given to clerks."
+	allowed_roles = list("City Clerk","Junior Clerk")
+
+/datum/gear/paperwork/mechprosthesisapp
+	path = /obj/item/weapon/paper/paperwork/mechanicalprostheticapp
+	display_name = "Applications for mechanical prosthesis (for roboticist)"
+	description = "clerical stuff for roboticists"
+	allowed_roles = list("Scientist","Research Director","Roboticist")
+
+/datum/gear/paperwork/postmortemprosthesisapp
+	path = /obj/item/weapon/paper/paperwork/postmortemprostheticapp
+	display_name = "Post Mortem Prosthetic Application (for the roboticist)"
+	description = "clerical stuff for roboticists"
+	allowed_roles = list("Scientist","Research Director","Roboticist")
