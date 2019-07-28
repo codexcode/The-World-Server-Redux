@@ -46,6 +46,10 @@
 	stun_strength = 10 // Slimebatons aren't meant for humans.
 	xeno_stun_strength = 5
 	xeno_harm_strength = 9
+
+	health = 500
+	maxHealth = 500 // A bit of durability won't hurt.
+
 	baton_glow = "#33CCFF"
 	req_one_access = list(access_research, access_robotics)
 	botcard_access = list(access_research, access_robotics, access_xenobiology, access_xenoarch, access_tox, access_tox_storage, access_maint_tunnels)
@@ -159,17 +163,17 @@
 	say("Down on the floor, [suspect_name]! You have [SECBOT_WAIT_TIME] seconds to comply.")
 	playsound(src.loc, pick(preparing_arrest_sounds), 50)
 	// Register to be told when the target moves
-	moved_event.register(target, src, /mob/living/bot/secbot/proc/target_moved)
+	GLOB.moved_event.register(target, src, /mob/living/bot/secbot/proc/target_moved)
 
 // Callback invoked if the registered target moves
 /mob/living/bot/secbot/proc/target_moved(atom/movable/moving_instance, atom/old_loc, atom/new_loc)
 	if(get_dist(get_turf(src), get_turf(target)) >= 1)
 		awaiting_surrender = INFINITY	// Done waiting!
-		moved_event.unregister(moving_instance, src)
+		GLOB.moved_event.unregister(moving_instance, src)
 
 /mob/living/bot/secbot/resetTarget()
 	..()
-	moved_event.unregister(target, src)
+	GLOB.moved_event.unregister(target, src)
 	awaiting_surrender = -1
 	walk_to(src, 0)
 

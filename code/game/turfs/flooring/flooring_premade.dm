@@ -61,29 +61,26 @@
 	name = "wooden floor"
 	icon = 'icons/turf/flooring/wood.dmi'
 	icon_state = "wood"
+	color = "#8f5a25"
 	initial_flooring = /decl/flooring/wood
 
-/turf/simulated/floor/wood/pale
-	icon_state = "palewood"
-	initial_flooring = /decl/flooring/wood/pale
-
 /turf/simulated/floor/wood/sif
-	icon_state = "sifwood"
+	color = "#0099cc"
 
 /turf/simulated/floor/wood/mahogany
-	icon_state = "mahogany"
+	color = WOOD_COLOR_RICH
 	initial_flooring = /decl/flooring/wood/mahogany
 
 /turf/simulated/floor/wood/maple
-	icon_state = "maple"
+	color = WOOD_COLOR_PALE
 	initial_flooring = /decl/flooring/wood/maple
 
 /turf/simulated/floor/wood/ebony
-	icon_state = "ebony"
+	color = WOOD_COLOR_BLACK
 	initial_flooring = /decl/flooring/wood/ebony
 
 /turf/simulated/floor/wood/walnut
-	icon_state = "walnut"
+	color = WOOD_COLOR_CHOCOLATE
 	initial_flooring = /decl/flooring/wood/walnut
 
 /turf/simulated/floor/grass
@@ -332,6 +329,12 @@
 	icon_state = "lino"
 	initial_flooring = /decl/flooring/linoleum
 
+/turf/simulated/floor/tiled/yellow
+	name = "yellow floor"
+	color = COLOR_BROWN
+	icon_state = "white"
+	initial_flooring = /decl/flooring/tiling/yellow
+
 //ATMOS PREMADES
 /turf/simulated/floor/reinforced/airless
 	name = "vacuum floor"
@@ -440,3 +443,59 @@
             overlays += icon(icon, "footprint[i]", text2num(d))
 
 //**** Here ends snow ****
+
+// Cosmetic (non-tiled) for now.
+
+/turf/simulated/floor/diamond
+	name = "black diamond floor"
+	icon = 'icons/turf/flooring/decorative.dmi'
+	icon_state = "tiles1"
+	initial_flooring = /decl/flooring/diamond
+
+/turf/simulated/floor/discoedge
+	name = "disco floor"
+	icon = 'icons/turf/flooring/decorative.dmi'
+	icon_state = "outertile"
+	initial_flooring = /decl/flooring/discoedge
+
+/turf/simulated/floor/wood/tiledwood
+	name = "tiled check floor"
+	icon_state = "tiledwood_check"
+	initial_flooring = /decl/flooring/wood/tiled
+	color = null
+
+/turf/simulated/floor/wood/tiledwood_plain
+	name = "tiled wood floor"
+	icon_state = "tiledwood2"
+	initial_flooring = /decl/flooring/wood/tiledwood
+
+
+//| Stairs
+	// - default is South, in terms of being at the top of the stairs looking down.
+/turf/simulated/floor/stairs/
+	name = "stairs"
+	icon = 'icons/turf/ramps.dmi'
+	icon_state = "ramptop"
+	initial_flooring = /decl/flooring/stairs
+
+/turf/simulated/floor/stairs/north
+	dir = 1
+	icon_state = "ramptop"
+/turf/simulated/floor/stairs/east
+	dir = 4
+	icon_state = "ramptop"
+/turf/simulated/floor/stairs/west
+	dir = 8
+	icon_state = "ramptop"
+
+/turf/simulated/floor/stairs/stairsdark/
+	icon_state = "rampbottom"
+/turf/simulated/floor/stairs/stairsdark/north
+	dir = 1
+	icon_state = "rampbottom"
+/turf/simulated/floor/stairs/stairsdark/east
+	dir = 4
+	icon_state = "rampbottom"
+/turf/simulated/floor/stairs/stairsdark/west
+	dir = 8
+	icon_state = "rampbottom"

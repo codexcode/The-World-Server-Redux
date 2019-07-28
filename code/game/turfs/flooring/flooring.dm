@@ -42,9 +42,17 @@ var/list/flooring_types
 	var/descriptor = "tiles"
 	var/flags
 	var/can_paint
-	var/list/footstep_sounds = list() // key=species name, value = list of soundss
+	var/list/footstep_sounds = list("human" = list(
+		'sound/effects/footstep/floor1.ogg',
+		'sound/effects/footstep/floor2.ogg',
+		'sound/effects/footstep/floor3.ogg',
+		'sound/effects/footstep/floor4.ogg',
+		'sound/effects/footstep/floor5.ogg'))
 
 	var/can_engrave = FALSE
+
+	var/floor_material
+	var/applies_material_color = FALSE
 
 /decl/flooring/grass
 	name = "grass"
@@ -341,7 +349,7 @@ var/list/flooring_types
 	desc = "Polished wooden planks."
 	icon = 'icons/turf/flooring/wood.dmi'
 	icon_base = "wood"
-	has_damage_range = 6
+	has_damage_range = 3
 	damage_temperature = T0C+200
 	descriptor = "planks"
 	build_type = /obj/item/stack/tile/wood
@@ -353,34 +361,41 @@ var/list/flooring_types
 		'sound/effects/footstep/wood4.ogg',
 		'sound/effects/footstep/wood5.ogg'))
 
+	floor_material = "wood"
+	applies_material_color = TRUE
+
+/decl/flooring/wood/tiled
+	icon_base = "tiledwood_check"
+	has_damage_range = 0
+	applies_material_color = FALSE
+	build_type = /obj/item/stack/tile/woodcheck
+
+/decl/flooring/wood/tiledwood
+	icon_base = "tiledwood"
+	has_damage_range = 3
+	build_type = /obj/item/stack/tile/woodtile
+
 /decl/flooring/wood/sif
 	name = "alien wooden floor"
 	desc = "Polished alien wood planks."
 	icon = 'icons/turf/flooring/wood.dmi'
-	icon_base = "sifwood"
+	floor_material = MAT_SIFLOG
 	build_type = /obj/item/stack/tile/wood/sif
 
-/decl/flooring/wood/pale
-	name = "pale wooden floor"
-	desc = "Old oak wood floor."
-	icon = 'icons/turf/flooring/wood.dmi'
-	icon_base = "palewood"
-	build_type = /obj/item/stack/tile/wood
-
 /decl/flooring/wood/mahogany
-	icon_base = "mahogany"
+	floor_material = MATERIAL_MAHOGANY
 	build_type = /obj/item/stack/tile/mahogany
 
 /decl/flooring/wood/maple
-	icon_base = "maple"
+	floor_material = MATERIAL_MAPLE
 	build_type = /obj/item/stack/tile/maple
 
 /decl/flooring/wood/ebony
-	icon_base = "ebony"
+	floor_material = MATERIAL_EBONY
 	build_type = /obj/item/stack/tile/ebony
 
 /decl/flooring/wood/walnut
-	icon_base = "walnut"
+	floor_material = MATERIAL_WALNUT
 	build_type = /obj/item/stack/tile/walnut
 
 
@@ -470,3 +485,17 @@ var/list/flooring_types
 
 /decl/flooring/road/garage
 	icon_base = "garage"
+
+/decl/flooring/diamond
+	icon = 'icons/turf/flooring/decorative.dmi'
+	icon_base = "tiles1"
+
+/decl/flooring/discoedge
+	icon = 'icons/turf/flooring/decorative.dmi'
+	icon_base = "outertile"
+
+/decl/flooring/stairs
+	icon = 'icons/turf/ramps.dmi'
+	icon_base = "ramptop"
+
+

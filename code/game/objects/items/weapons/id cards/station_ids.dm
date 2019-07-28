@@ -30,6 +30,9 @@
 	var/rank = null			//actual job
 	var/dorm = 0			// determines if this ID has claimed a dorm already
 
+	var/email				// associated email
+	var/unique_ID			// character's unique ID
+
 /obj/item/weapon/card/id/examine(mob/user)
 	set src in oview(1)
 	if(in_range(usr, src))
@@ -74,13 +77,16 @@
 /mob/living/carbon/human/set_id_info(var/obj/item/weapon/card/id/id_card)
 	..()
 	id_card.age = age
+	if(mind)
+		id_card.email = mind.initial_email
+		id_card.unique_ID = mind.prefs.unique_id
 
 /obj/item/weapon/card/id/proc/dat()
 	var/dat = ("<table><tr><td>")
 	dat += text("Name: []</A><BR>", registered_name)
 	dat += text("Sex: []</A><BR>\n", sex)
 	dat += text("Age: []</A><BR>\n", age)
-	dat += text("Rank: []</A><BR>\n", assignment)
+	dat += text("Job: []</A><BR>\n", assignment)
 	dat += text("Fingerprint: []</A><BR>\n", fingerprint_hash)
 	dat += text("Blood Type: []<BR>\n", blood_type)
 	dat += text("DNA Hash: []<BR><BR>\n", dna_hash)
@@ -185,26 +191,37 @@
 	. = ..()
 	access |= get_all_station_access()
 
-/obj/item/weapon/card/id/cbia
-	name = "\improper CBIA Agent ID"
-	desc = "An ID straight from Central Command for the CBIA."
+// NT big bad IDs
+/obj/item/weapon/card/id/nanotrasen
 	icon_state = "nanotrasen"
-	registered_name = "Central Command"
-	assignment = "General"
-pref.money_balance
 
-/obj/item/weapon/card/id/cbia/initialize()
+/obj/item/weapon/card/id/nanotrasen/initialize()
 	. = ..()
 	access += get_all_centcom_access()
 	access += get_all_station_access()
 
-/obj/item/weapon/card/id/centcom/station/president
-	name = "\improper President's ID"
-	desc = "An ID that has both centcom and full city access."
+/obj/item/weapon/card/id/nanotrasen/ntrep
+	name = "\improper NanoTrasen Representative ID"
+	desc = "An ID for NanoTrasen representatives. You can smell the pompous."
+	job_access_type = /datum/job/nanotrasen
 
-/obj/item/weapon/card/id/centcom/station/ceo
+/obj/item/weapon/card/id/nanotrasen/cbia
+	name = "\improper CBIA Agent ID"
+	desc = "An ID straight from NanoTrasen for the CBIA."
+	job_access_type = /datum/job/nanotrasen/cbia
+
+/obj/item/weapon/card/id/nanotrasen/president
+	name = "\improper President's ID"
+	desc = "An ID that reeks of appointed entitlement. For the president, naturally."
+	job_access_type = /datum/job/nanotrasen/president
+
+/obj/item/weapon/card/id/nanotrasen/ceo
 	name = "\improper NanoTrasen CEO's ID"
-	desc = "An ID that has both centcom and full city access."
+	desc = "The head honcho themselves. This has access to anything that exists under the colonies."
+	job_access_type = /datum/job/nanotrasen/ceo
+
+
+// Emergency response team IDs
 
 /obj/item/weapon/card/id/centcom/ERT
 	name = "\improper Emergency Response Team ID"

@@ -458,10 +458,16 @@
 	for(var/potential_color in slime_mutation)
 		var/mob/living/simple_animal/slime/S = potential_color
 		rewards.Add(initial(S.slime_color))
-	var/reward_line = "This color of slime can mutate into [english_list(rewards)] colors, when it reproduces.  It will do so when it has eatten enough."
+	var/reward_line = "This color of slime can mutate into [english_list(rewards)] colors, when it reproduces.  It will do so when it has eaten enough."
 	lines.Add(reward_line)
 	lines.Add(null)
 
 	lines.Add(description_info)
 	return lines.Join("\n")
 
+
+/mob/living/simple_animal/slime/DestroySurroundings(var/direction)
+	
+	if(!rabid)		// Slimes should only destroy windows when they've been abused.
+		return
+	..()
